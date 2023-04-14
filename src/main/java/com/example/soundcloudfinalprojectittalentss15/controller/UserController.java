@@ -16,8 +16,8 @@ public class UserController extends AbstractController{
     private UserService userService;
 
     @PostMapping("/users")
-    public UserWithoutPasswordDTO register(@Valid @RequestBody RegisterDTO dto, BindingResult result) {
-        return userService.register(dto, result);
+    public UserWithoutPasswordDTO register(@Valid @RequestBody RegisterDTO dto) {
+        return userService.register(dto);
     }
 
 //    @GetMapping("/users/{id}")

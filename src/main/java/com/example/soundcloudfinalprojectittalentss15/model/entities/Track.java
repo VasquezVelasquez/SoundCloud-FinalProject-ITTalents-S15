@@ -14,5 +14,5 @@ public class Track {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int trackId;
+    private int id;
 }

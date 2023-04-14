@@ -17,14 +17,14 @@ public class UserService extends AbstractService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-    public UserWithoutPasswordDTO register(@Valid @ModelAttribute("registerDTO") RegisterDTO dto, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new BadRequestException("Wrong credentials. Please try again!");
-        }
+    public UserWithoutPasswordDTO register(RegisterDTO dto) {
 
-        User u = mapper.map(dto, User.class);
-        u.setPassword(encoder.encode(u.getPassword()));
-        userRepository.save(u);
-        return mapper.map(u, UserWithoutPasswordDTO.class);
+
+        System.out.println(dto.getEmail());
+//        User u = mapper.map(dto, User.class);
+//        u.setPassword(encoder.encode(u.getPassword()));
+//        userRepository.save(u);
+//        return mapper.map(u, UserWithoutPasswordDTO.class);
+        return null;
     }
 }
