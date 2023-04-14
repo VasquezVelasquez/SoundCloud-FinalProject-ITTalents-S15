@@ -18,7 +18,7 @@ public class AbstractService {
     @Autowired
     protected ModelMapper mapper;
 
-    protected User getUserById(int id){
-        return userRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException("User not found"));
-    }
+//    protected User getUserById(int id){
+//        return userRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException("User not found"));
+//    }
 }
