@@ -1,15 +1,13 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
-import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.TrackRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AbstractService {
+public abstract class AbstractService {
 
     @Autowired
     protected UserRepository userRepository;
