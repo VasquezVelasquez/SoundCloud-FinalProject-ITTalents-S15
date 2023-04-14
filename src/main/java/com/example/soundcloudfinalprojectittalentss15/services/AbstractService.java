@@ -1,5 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
+import com.example.soundcloudfinalprojectittalentss15.model.repositories.CommentRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.TrackRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,8 @@ public abstract class AbstractService {
     protected TrackRepository trackRepository;
     @Autowired
     protected ModelMapper mapper;
+    @Autowired
+    protected CommentRepository commentRepository;
 
 //    protected User getUserById(int id){
 //        return userRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException("User not found"));
