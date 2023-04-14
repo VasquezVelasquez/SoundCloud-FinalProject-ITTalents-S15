@@ -24,9 +24,9 @@ public class SoundCloudFinalProjectItTalentsS15Application {
 		return new ModelMapper();
 	}
 
-	@Bean
-	public Validation validation() {
-		return new Validation();
-	}
+//	@Bean
+//	public Validation validation() {
+//		return new Validation();
+//	}
 
 }

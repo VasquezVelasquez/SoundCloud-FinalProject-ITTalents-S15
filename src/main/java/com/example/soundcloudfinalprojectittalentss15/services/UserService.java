@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 public class UserService extends AbstractService {
 
@@ -19,12 +22,19 @@ public class UserService extends AbstractService {
 
     public UserWithoutPasswordDTO register(RegisterDTO dto) {
 
+        if (!dto.getPassword().equals(dto.getConfirmedPassword())) {
+            throw new BadRequestException("Passwords mismatch");
+        }
 
-        System.out.println(dto.getEmail());
-//        User u = mapper.map(dto, User.class);
-//        u.setPassword(encoder.encode(u.getPassword()));
-//        userRepository.save(u);
-//        return mapper.map(u, UserWithoutPasswordDTO.class);
-        return null;
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new BadRequestException("Email already exists");
+        }
+
+        User u = mapper.map(dto, User.class);
+        u.setCreatedAt(LocalDateTime.now());
+        u.setLastLogin(LocalDateTime.now());
+        u.setPassword(encoder.encode(u.getPassword()));
+        userRepository.save(u);
+        return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 }
