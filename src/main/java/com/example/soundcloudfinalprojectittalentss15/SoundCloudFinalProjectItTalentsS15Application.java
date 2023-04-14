@@ -1,5 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15;
 
+import jakarta.validation.Validation;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +22,11 @@ public class SoundCloudFinalProjectItTalentsS15Application {
 	@Bean
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
+	}
+
+	@Bean
+	public Validation validation() {
+		return new Validation();
 	}
 
 }

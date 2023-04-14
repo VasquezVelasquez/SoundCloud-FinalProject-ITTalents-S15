@@ -4,7 +4,9 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,11 +16,8 @@ public class UserController extends AbstractController{
     private UserService userService;
 
     @PostMapping("/users")
-    public UserWithoutPasswordDTO register(@RequestBody RegisterDTO dto) {
-
-
-
-        return null;
+    public UserWithoutPasswordDTO register(@Valid @RequestBody RegisterDTO dto, BindingResult result) {
+        return userService.register(dto, result);
     }
 
 //    @GetMapping("/users/{id}")
