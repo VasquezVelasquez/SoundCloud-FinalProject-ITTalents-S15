@@ -1,10 +1,13 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.LoginDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +23,23 @@ public class UserController extends AbstractController{
         return userService.register(dto);
     }
 
-//    @GetMapping("/users/{id}")
-//    public UserWithoutPasswordDTO getUsedInfo(@PathVariable int id) {
-//        return null;
-//    }
-//
-//    @PostMapping("/users/login")
-//    public UserWithoutPasswordDTO login(@RequestBody LoginDTO dto) {
-//        return null;
-//    }
+    @GetMapping("/users/{id}")
+    public UserWithoutPasswordDTO getUserInfo(@PathVariable int id) {
+        return userService.getUserInfo(id);
+    }
+
+    @PostMapping("/users/login")
+    public UserWithoutPasswordDTO login(@RequestBody LoginDTO dto, HttpSession s) {
+        if (s.getAttribute("LOGGED_ID") != null && (Boolean)s.getAttribute("LOGGED")) {
+            throw new BadRequestException("User is already logged in.");
+        }
+
+        UserWithoutPasswordDTO responseDTO = userService.login(dto);
+
+        s.setAttribute("LOGGED", true);
+        s.setAttribute("LOGGED_ID", responseDTO.getId());
+        return responseDTO;
+    }
 //
 //    @PostMapping("/users/logout")
 //    public UserWithoutPasswordDTO logout(HttpSession s) {

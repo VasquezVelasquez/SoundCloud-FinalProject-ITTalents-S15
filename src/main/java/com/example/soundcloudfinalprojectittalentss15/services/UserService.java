@@ -1,9 +1,11 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.LoginDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +37,30 @@ public class UserService extends AbstractService {
         u.setLastLogin(LocalDateTime.now());
         u.setPassword(encoder.encode(u.getPassword()));
         userRepository.save(u);
+        return mapper.map(u, UserWithoutPasswordDTO.class);
+    }
+
+    public UserWithoutPasswordDTO getUserInfo(int id) {
+        Optional<User> opt = userRepository.findById(id);
+        if (opt.isEmpty()) {
+            throw new BadRequestException("No such user");
+        }
+
+        return mapper.map(opt.get(), UserWithoutPasswordDTO.class);
+    }
+
+    public UserWithoutPasswordDTO login(LoginDTO dto) {
+        Optional<User> opt = userRepository.findByEmail(dto.getEmail());
+        if (opt.isEmpty()) {
+            throw new UnauthorizedException("Wrong credentials.");
+        }
+
+        User u = opt.get();
+
+        if (!encoder.matches(dto.getPassword(), u.getPassword())) {
+            throw new UnauthorizedException("Wrong credentials.");
+        }
+
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 }
