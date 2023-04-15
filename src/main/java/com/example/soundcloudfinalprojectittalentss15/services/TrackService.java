@@ -1,9 +1,11 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUrlDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ import java.util.UUID;
 
 public class TrackService extends AbstractService{
     @SneakyThrows
-    public String upload(MultipartFile trackFile, int loggedId) {
+    public TrackUrlDTO upload(MultipartFile trackFile, int loggedId) {
         String extension = FilenameUtils.getExtension(trackFile.getOriginalFilename());
         String name = UUID.randomUUID().toString() + "." + extension;
         File dir = new File("tracks");
@@ -29,19 +31,23 @@ public class TrackService extends AbstractService{
         File file = new File(dir, name);
         Files.copy(trackFile.getInputStream(), file.toPath());
         String url = dir.getName() + File.separator + file.getName();
-        return url;
-//        Track track = mapper.map(trackDTO, Track.class);
-//        track.setTrackUrl(url);
-//        track.setUploadedAt(LocalDateTime.now());
-//        Optional opt = userRepository.findById(loggedId);
-//        track.setOwner((User) opt.get());
-//        trackRepository.save(track);
-//        return mapper.map(track, TrackDTO.class);
+        TrackUrlDTO urlDTO = new TrackUrlDTO();
+        urlDTO.setTrackUrl(url);
+        return urlDTO;
+    }
 
-
-
-
-
-
+    public TrackDTO uploadTrackInfo(TrackDTO trackDTO, String url, int loggedId) {
+        File dir = new File("tracks");
+        File file = new File(dir, url);
+        if (!file.exists()) {
+            throw new BadRequestException("no track uploaded");
+        }
+        Track track = mapper.map(trackDTO, Track.class);
+        track.setTrackUrl(url);
+        track.setUploadedAt(LocalDateTime.now());
+        Optional opt = userRepository.findById(loggedId);
+        track.setOwner((User) opt.get());
+        trackRepository.save(track);
+        return mapper.map(track, TrackDTO.class);
     }
 }

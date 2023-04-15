@@ -1,4 +1,4 @@
-package com.example.soundcloudfinalprojectittalentss15.model.DTOs;
+package com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs;
 
 
 import lombok.Getter;
@@ -17,5 +17,5 @@ public class TrackDTO {
     private String description;
     private Boolean isPublic;
     private String trackUrl;
-    private String ownerName;
+    private String ownerDisplayName;
 }
