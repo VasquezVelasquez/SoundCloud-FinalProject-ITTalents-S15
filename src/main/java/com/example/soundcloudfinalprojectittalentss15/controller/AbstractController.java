@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.ErrorDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -60,6 +61,13 @@ public abstract class AbstractController {
                 .time(LocalDateTime.now())
                 .status(s.value())
                 .build();
+    }
+
+    protected int getLoggedId(HttpSession s){
+        if(s.getAttribute("LOGGED_ID") == null){
+            throw new UnauthorizedException("You have to login first");
+        }
+        return (int) s.getAttribute("LOGGED_ID");
     }
 
 

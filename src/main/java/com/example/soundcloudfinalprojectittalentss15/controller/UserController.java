@@ -5,6 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
