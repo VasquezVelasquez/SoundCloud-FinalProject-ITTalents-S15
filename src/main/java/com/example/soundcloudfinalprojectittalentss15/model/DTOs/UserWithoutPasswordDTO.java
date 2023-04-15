@@ -1,5 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.model.DTOs;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,4 +17,8 @@ public class UserWithoutPasswordDTO {
     private String email;
     private String displayName;
     private int age;
+    private String firstName;
+    private String lastName;
+    private String profilePictureUrl;
+    private String backgroundPictureUrl;
 }
