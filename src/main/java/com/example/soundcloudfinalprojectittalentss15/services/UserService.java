@@ -1,16 +1,15 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.LoginDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
-import jakarta.validation.Valid;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.parser.Entity;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -32,7 +31,6 @@ public class UserService extends AbstractService {
 
         User u = mapper.map(dto, User.class);
         u.setCreatedAt(LocalDateTime.now());
-        u.setLastLogin(LocalDateTime.now());
         u.setPassword(encoder.encode(u.getPassword()));
         userRepository.save(u);
         return mapper.map(u, UserWithoutPasswordDTO.class);
@@ -58,6 +56,39 @@ public class UserService extends AbstractService {
         if (!encoder.matches(dto.getPassword(), u.getPassword())) {
             throw new UnauthorizedException("Wrong credentials.");
         }
+
+        u.setLastLogin(LocalDateTime.now());
+        return mapper.map(u, UserWithoutPasswordDTO.class);
+    }
+
+    public void deleteAccount(PasswordDTO dto, int loggedId) {
+        Optional<User> optionalUser = userRepository.findById(loggedId);
+
+        if (optionalUser.isEmpty()) {
+            throw new BadRequestException("User doesn't exist.");
+        }
+
+        if (!encoder.matches(dto.getPassword(), optionalUser.get().getPassword())) {
+            throw new UnauthorizedException("Wrong credentials.");
+        }
+
+        userRepository.deleteById(loggedId);
+    }
+
+    public UserWithoutPasswordDTO edit(EditDTO dto, int userId) {
+        Optional<User> opt = userRepository.findById(userId);
+        if(opt.isEmpty()) {
+            throw new BadRequestException("User doesn't exist.");
+        }
+
+        User u = opt.get();
+
+        u.setDisplayName(dto.getDisplayName());
+        u.setFirstName(dto.getFirstName());
+        u.setLastName(dto.getLastName());
+        u.setAge(dto.getAge());
+        u.setGender(dto.getGender());
+        u.setBio(dto.getBio());
 
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }

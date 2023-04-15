@@ -1,13 +1,11 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.LoginDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,25 +41,34 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/users/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        if (session.getAttribute("LOGGED") != null && (Boolean) session.getAttribute("LOGGED")) {
-            session.invalidate();
+    public ResponseEntity<String> logout(HttpSession s) {
+        if (s.getAttribute("LOGGED") != null && (Boolean) s.getAttribute("LOGGED")) {
+            s.invalidate();
             return ResponseEntity.ok("User logged out successfully.");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not logged in.");
         }
     }
-//
-//    //todo what would be the return type
-//    @DeleteMapping("/users")
-//    public void deleteAccount(HttpSession s) {
-//        return;
-//    }
-//
-//    @PutMapping("/users")
-//    public UserWithoutPasswordDTO edit(@RequestBody EditDTO dto) {
-//        return null;
-//    }
+
+    @DeleteMapping("/users")
+    public ResponseEntity<String> deleteAccount(@RequestBody PasswordDTO dto, HttpSession s) {
+        if (s.getAttribute("LOGGED_ID") != null && (Boolean) s.getAttribute("LOGGED")) {
+            userService.deleteAccount(dto, (int) s.getAttribute("LOGGED_ID"));
+            s.invalidate();
+            return ResponseEntity.ok("Account deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not logged in.");
+        }
+    }
+
+    @PutMapping("/users")
+    public UserWithoutPasswordDTO edit(@RequestBody EditDTO dto, HttpSession s) {
+        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
+            throw new BadRequestException("User is not logged in.");
+        }
+
+        return userService.edit(dto, getLoggedId(s));
+    }
 //
 //    @PostMapping("/users/edit/profile-pic")
 //    public UserWithoutPasswordDTO uploadProfilePic(@RequestBody MediaDTO dto) {

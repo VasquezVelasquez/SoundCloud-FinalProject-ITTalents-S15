@@ -4,16 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Set;
-
 @Setter
 @Getter
 @NoArgsConstructor
-public class UserWithoutPasswordDTO {
+public class PasswordDTO {
 
-    private int id;
-    private String email;
-    private String displayName;
-    private int age;
+    private String password;
 }
