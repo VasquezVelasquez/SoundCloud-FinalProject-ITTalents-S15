@@ -1,7 +1,9 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUrlDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,14 @@ public class TrackController extends AbstractController {
     @PostMapping("/tracks/{url}/info")
     public TrackDTO uploadTrackInfo(@PathVariable String url, @RequestBody TrackDTO trackDTO, HttpSession s) {
         return trackService.uploadTrackInfo(trackDTO, url, getLoggedId(s));
+    }
+
+    @PutMapping("/tracks/{trackId}")
+    public TrackDTO editTrack(@PathVariable int trackId, @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
+        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
+            throw new BadRequestException("User is not logged in.");
+        }
+        return trackService.editTrack(trackId, trackEditDTO,  getLoggedId(s));
     }
 
 

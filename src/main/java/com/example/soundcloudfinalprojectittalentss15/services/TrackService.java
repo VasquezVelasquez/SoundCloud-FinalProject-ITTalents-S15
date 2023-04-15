@@ -2,10 +2,12 @@ package com.example.soundcloudfinalprojectittalentss15.services;
 
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUrlDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
@@ -45,9 +47,29 @@ public class TrackService extends AbstractService{
         Track track = mapper.map(trackDTO, Track.class);
         track.setTrackUrl(url);
         track.setUploadedAt(LocalDateTime.now());
-        Optional opt = userRepository.findById(loggedId);
-        track.setOwner((User) opt.get());
+        Optional<User> opt = userRepository.findById(loggedId);
+        track.setOwner(opt.get());
         trackRepository.save(track);
         return mapper.map(track, TrackDTO.class);
+    }
+
+    public TrackDTO editTrack(int trackId, TrackEditInfoDTO trackEditDTO, int loggedId) {
+        Optional<Track> opt = trackRepository.findById(trackId);
+        if(opt.isEmpty()) {
+            throw new BadRequestException("Track doesn't exist.");
+        }
+        Track track = opt.get();
+        if(track.getOwner().getId() != loggedId) {
+            throw new UnauthorizedException("Not authorized action! ");
+        }
+
+        track.setDescription(trackEditDTO.getDescription());
+        track.setPublic(trackEditDTO.isPublic());
+        track.setTitle(trackEditDTO.getTitle());
+
+        trackRepository.save(track);
+
+        return mapper.map(track, TrackDTO.class);
+
     }
 }
