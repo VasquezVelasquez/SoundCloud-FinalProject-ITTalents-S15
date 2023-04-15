@@ -2,9 +2,15 @@ package com.example.soundcloudfinalprojectittalentss15.model.entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
 @Entity(name = "comments")
 public class Comment {
 

@@ -3,6 +3,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.CommentInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Comment;
 import com.example.soundcloudfinalprojectittalentss15.services.CommentService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,9 @@ public class CommentController extends AbstractController{
     }
 
     @PostMapping("/track/{trackId}/comments")
-    public CommentInfoDTO createComment(@PathVariable int trackId, @RequestBody String content) {
-        return commentService.createComment(trackId, content);
+    public CommentInfoDTO createComment(@PathVariable int trackId, @RequestBody String content, HttpSession s) {
+        int userId = getLoggedId(s);
+        return commentService.createComment(trackId, content, userId);
     }
 
 
