@@ -85,10 +85,15 @@ public class UserController extends AbstractController{
 //        return null;
 //    }
 //
-//    @PostMapping("/users/password")
-//    public UserWithoutPasswordDTO changePassword(@RequestBody ChangePasswordDTO dto) {
-//        return null;
-//    }
+    @PostMapping("/users/password")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO dto, HttpSession s) {
+        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
+            throw new BadRequestException("User is not logged in.");
+        }
+
+        userService.changePassword(dto, getLoggedId(s));
+        return ResponseEntity.ok("Password changed successful.");
+    }
 
 
 }

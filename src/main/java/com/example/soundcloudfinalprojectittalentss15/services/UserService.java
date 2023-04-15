@@ -4,12 +4,10 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.parser.Entity;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -91,5 +89,27 @@ public class UserService extends AbstractService {
         u.setBio(dto.getBio());
 
         return mapper.map(u, UserWithoutPasswordDTO.class);
+    }
+
+
+    public void changePassword(ChangePasswordDTO dto, int loggedId) {
+        Optional<User> opt = userRepository.findById(loggedId);
+
+        if (opt.isEmpty()) {
+            throw new BadRequestException("User doesn't exist.");
+        }
+
+        User u = opt.get();
+
+        if (!encoder.matches(dto.getPassword(), u.getPassword())) {
+            throw new UnauthorizedException("Wrong credentials.");
+        }
+
+        if (!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {
+            throw new BadRequestException("New password mismatch");
+        }
+
+        u.setPassword(encoder.encode(dto.getNewPassword()));
+        userRepository.save(u);
     }
 }
