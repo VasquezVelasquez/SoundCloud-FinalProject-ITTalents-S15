@@ -3,10 +3,8 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.RegisterDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
