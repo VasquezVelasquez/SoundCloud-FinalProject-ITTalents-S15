@@ -41,6 +41,4 @@ public class User {
     @Column
     private Boolean isVerified;
 
-
-
 }
