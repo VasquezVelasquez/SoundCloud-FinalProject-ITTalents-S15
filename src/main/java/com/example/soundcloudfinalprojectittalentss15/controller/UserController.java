@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,11 +41,16 @@ public class UserController extends AbstractController{
         s.setAttribute("LOGGED_ID", responseDTO.getId());
         return responseDTO;
     }
-//
-//    @PostMapping("/users/logout")
-//    public UserWithoutPasswordDTO logout(HttpSession s) {
-//        return null;
-//    }
+
+    @PostMapping("/users/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        if (session.getAttribute("LOGGED") != null && (Boolean) session.getAttribute("LOGGED")) {
+            session.invalidate();
+            return ResponseEntity.ok("User logged out successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not logged in.");
+        }
+    }
 //
 //    //todo what would be the return type
 //    @DeleteMapping("/users")
