@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateTrackDTO {
+public class CreatePlaylistDTO {
 
     private String title;
     private boolean isPublic;

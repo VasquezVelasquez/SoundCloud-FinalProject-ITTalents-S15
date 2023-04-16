@@ -1,6 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreateTrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreatePlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class PlaylistService extends AbstractService{
 
 
-    public PlaylistDTO create(CreateTrackDTO dto, int loggedId) {
+    public PlaylistDTO create(CreatePlaylistDTO dto, int loggedId) {
         Playlist playlist = mapper.map(dto, Playlist.class);
         playlist.setOwner(getUserById(loggedId));
         playlist.setPublic(dto.isPublic());
@@ -30,6 +30,7 @@ public class PlaylistService extends AbstractService{
     }
 
     public ResponseEntity<String> deletePlaylist(int playlistId, int loggedId) {
+        Playlist playlist = playlistRepository.getReferenceById(playlistId);
         return null;
     }
 

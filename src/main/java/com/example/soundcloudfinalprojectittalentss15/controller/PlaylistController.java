@@ -1,6 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreateTrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreatePlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.TrackIdDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
@@ -19,7 +19,7 @@ public class PlaylistController extends AbstractController{
     private PlaylistService playlistService;
 
     @PostMapping("/playlists")
-    public PlaylistDTO create(@RequestBody CreateTrackDTO dto, HttpSession s) {
+    public PlaylistDTO create(@RequestBody CreatePlaylistDTO dto, HttpSession s) {
         return playlistService.create(dto, getLoggedId(s));
     }
 
