@@ -1,24 +1,20 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.ErrorDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.ErrorDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpSession;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public abstract class AbstractController {
 

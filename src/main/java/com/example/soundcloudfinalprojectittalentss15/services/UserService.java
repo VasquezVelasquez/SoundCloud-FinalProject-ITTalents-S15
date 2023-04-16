@@ -1,14 +1,12 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.*;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;

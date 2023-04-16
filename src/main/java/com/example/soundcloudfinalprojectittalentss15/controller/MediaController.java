@@ -1,6 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.MediaService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,6 +46,11 @@ public class MediaController extends AbstractController{
     }
 
 
+    @PostMapping("/playlists/{playlistId}/cover")
+    public PlaylistDTO uploadPlaylistCoverPicture(@RequestParam("file") MultipartFile file,
+                                                  @PathVariable int playlistId, HttpSession s) {
+        return mediaService.uploadPlaylistCoverPicture(file, playlistId, getLoggedId(s));
+    }
 
 
 }

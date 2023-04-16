@@ -1,21 +1,21 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Optional;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -60,7 +60,6 @@ public class MediaService extends AbstractService{
         String url = dir.getName() + File.separator + f.getName();
         User u = getUserById(userId);
         if (u.getBackgroundPictureUrl() != null) {
-            // Delete the current profile picture
             File currentProfileBackground = new File(u.getBackgroundPictureUrl());
             if (currentProfileBackground.exists()) {
                 currentProfileBackground.delete();
@@ -86,7 +85,7 @@ public class MediaService extends AbstractService{
     public TrackDTO uploadTrackCoverPicture(MultipartFile file, int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         if(track.getOwner().getId() != loggedId) {
-            throw new UnauthorizedException("Not authorized action! ");
+            throw new UnauthorizedException("Not authorized action!");
         }
         String name = createFileName(file);
         String url = createFile(file, name);
@@ -115,6 +114,24 @@ public class MediaService extends AbstractService{
 
     }
 
+
+    @SneakyThrows
+    public PlaylistDTO uploadPlaylistCoverPicture(MultipartFile file, int playlistId, int loggedId) {
+        Playlist playlist = getPlaylistById(playlistId);
+        if (playlist.getOwner().getId() != loggedId) {
+            throw new UnauthorizedException("Not authorized action!");
+        }
+        String fileName = createFileName(file);
+        String url = createFile(file, fileName);
+
+        if (playlist.getCoverPictureUrl() != null) {
+            Files.deleteIfExists(Paths.get(playlist.getCoverPictureUrl()));
+        }
+
+        playlist.setCoverPictureUrl(url);
+        playlistRepository.save(playlist);
+        return mapper.map(playlist, PlaylistDTO.class);
+    }
 
 
 }

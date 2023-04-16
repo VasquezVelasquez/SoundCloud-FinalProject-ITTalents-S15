@@ -1,4 +1,4 @@
-package com.example.soundcloudfinalprojectittalentss15.model.DTOs;
+package com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

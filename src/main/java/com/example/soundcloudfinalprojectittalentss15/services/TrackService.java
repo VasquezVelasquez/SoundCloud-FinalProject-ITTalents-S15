@@ -73,21 +73,16 @@ public class TrackService extends AbstractService{
 
     }
 
-<<<<<<< Updated upstream
     public TrackDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         User u = getUserById(loggedId);
-        if(u.getLikedTracks().contains(track)) {
+        if (u.getLikedTracks().contains(track)) {
             u.getLikedTracks().remove(track);
-        }
-        else {
+        } else {
             u.getLikedTracks().add(track);
         }
         userRepository.save(u);
 
         return mapper.map(track, TrackDTO.class);
-=======
-    public TrackDTO likeTrack(int id, int loggedId) {
->>>>>>> Stashed changes
     }
 }

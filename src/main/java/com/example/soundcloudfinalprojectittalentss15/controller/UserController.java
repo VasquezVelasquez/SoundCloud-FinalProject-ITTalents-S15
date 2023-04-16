@@ -1,8 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.*;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

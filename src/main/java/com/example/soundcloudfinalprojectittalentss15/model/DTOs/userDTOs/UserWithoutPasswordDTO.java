@@ -1,4 +1,4 @@
-package com.example.soundcloudfinalprojectittalentss15.model.DTOs;
+package com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs;
 
 import jakarta.persistence.Column;
 import lombok.Getter;
