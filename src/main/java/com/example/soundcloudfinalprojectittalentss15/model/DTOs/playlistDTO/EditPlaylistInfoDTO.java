@@ -9,14 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreatePlaylistDTO {
-
+public class EditPlaylistInfoDTO {
 
     @Size(min = 2, max = 50, message = "Title name must be between 2 and 50 characters")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Title name can only contain letters and digits")
     private String title;
-
     private boolean isPublic;
-
-//    private int trackId;
+    @Size(max = 500, message = "Title name must contains maximum 500 characters")
+    private String description;
 }
