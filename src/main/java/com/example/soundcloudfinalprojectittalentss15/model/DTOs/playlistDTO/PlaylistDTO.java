@@ -13,6 +13,7 @@ public class PlaylistDTO {
 
     private int id;
     private String title;
+    private String description;
     private LocalDateTime createdAt;
     private boolean isPublic;
     private String coverPictureUrl;
