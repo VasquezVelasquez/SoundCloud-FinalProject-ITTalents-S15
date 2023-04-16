@@ -73,9 +73,9 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/users/{followedId}/follow")
-    public ResponseEntity<String> follow(@PathVariable int followedId, HttpSession s) {
+    public FollowDTO follow(@PathVariable int followedId, HttpSession s) {
         int followerId = getLoggedId(s);
-        return ResponseEntity.ok(userService.follow(followerId, followedId));
+        return userService.follow(followedId, followerId);
     }
 
     @PostMapping("/users/password")

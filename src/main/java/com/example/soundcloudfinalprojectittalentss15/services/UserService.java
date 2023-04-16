@@ -119,34 +119,28 @@ public class UserService extends AbstractService {
         userRepository.save(u);
     }
 
-    public String follow(int followerId, int followedId) {
+    public FollowDTO follow(int followerId, int followedId) {
         if (followedId == followerId) {
             throw new BadRequestException("Cannot follow yourself");
         }
 
-        boolean unfollow = false;
+        boolean isFollowing = true;
 
         User follower = getUserById(followerId);
         User followed = getUserById(followedId);
         if (followed.getFollowers().contains(follower)) {
             followed.getFollowers().remove(follower);
             follower.getFollowedUsers().remove(followed);
-            unfollow = true;
+            isFollowing = false;
         } else {
             followed.getFollowers().add(follower);
             follower.getFollowedUsers().add(followed);
         }
         userRepository.save(follower);
-        userRepository.save(follower);
+        userRepository.save(followed);
 
-        String resp = "";
-        if (unfollow) {
-            resp = "You have unfollowed a user with id - " + followedId;
-        } else {
-            resp = "You followed a user with id " + followedId;
-        }
 
-        return resp;
+        return convertToFollowDTO(follower, followed, isFollowing);
     }
 
     public List<UserWithoutPasswordDTO> getAll() {
@@ -154,5 +148,23 @@ public class UserService extends AbstractService {
                 .stream()
                 .map( u -> mapper.map(u, UserWithoutPasswordDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public FollowDTO convertToFollowDTO(User follower, User followedUser, boolean isFollowing) {
+
+        // Map follower data to FollowDTO
+        FollowDTO followDTO = mapper.map(follower, FollowDTO.class);
+        followDTO.setFollowerId(follower.getId());
+        followDTO.setFollowerDisplayName(follower.getDisplayName());
+
+        // Map followed user data to FollowDTO
+        followDTO.setFollowedUserId(followedUser.getId());
+        followDTO.setFollowedUserDisplayName(followedUser.getDisplayName());
+
+        // Set isFollowing and followEventAt
+        followDTO.setFollowing(isFollowing);
+        followDTO.setFollowEventAt(LocalDateTime.now());
+
+        return followDTO;
     }
 }
