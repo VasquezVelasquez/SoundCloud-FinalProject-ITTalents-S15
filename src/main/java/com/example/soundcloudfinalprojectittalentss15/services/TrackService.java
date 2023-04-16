@@ -73,6 +73,7 @@ public class TrackService extends AbstractService{
 
     }
 
+<<<<<<< Updated upstream
     public TrackDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         User u = getUserById(loggedId);
@@ -85,5 +86,8 @@ public class TrackService extends AbstractService{
         userRepository.save(u);
 
         return mapper.map(track, TrackDTO.class);
+=======
+    public TrackDTO likeTrack(int id, int loggedId) {
+>>>>>>> Stashed changes
     }
 }

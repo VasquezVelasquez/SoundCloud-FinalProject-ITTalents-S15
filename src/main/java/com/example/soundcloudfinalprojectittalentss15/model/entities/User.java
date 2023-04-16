@@ -5,7 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+<<<<<<< Updated upstream
 import java.util.HashSet;
+=======
+>>>>>>> Stashed changes
 import java.util.Set;
 
 @Getter
@@ -48,6 +51,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id"))
     private Set<Track> likedTracks;
+<<<<<<< Updated upstream
 
     @ManyToMany
     @JoinTable(
@@ -59,5 +63,7 @@ public class User {
 
     @ManyToMany(mappedBy = "followedUsers")
     private Set<User> followers = new HashSet<>();
+=======
+>>>>>>> Stashed changes
 
 }
