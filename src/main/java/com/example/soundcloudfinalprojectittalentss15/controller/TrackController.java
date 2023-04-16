@@ -5,10 +5,16 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUrlDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.nio.file.Files;
 
 
 @RestController
@@ -55,6 +61,18 @@ public class TrackController extends AbstractController {
     public TrackInfoDTO getTrackById(@PathVariable int id) {
         return trackService.showTrackById(id);
     }
+
+    @SneakyThrows
+    @GetMapping("tracks/{url}/play")
+    public void playTrack(@PathVariable("url") String url, HttpServletResponse response) {
+        File track = trackService.download(url);
+        Files.copy(track.toPath(), response.getOutputStream());
+
+
+
+    }
+
+
 
 
 

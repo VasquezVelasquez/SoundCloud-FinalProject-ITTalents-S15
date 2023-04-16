@@ -9,5 +9,9 @@ import java.util.Optional;
 @Repository
 public interface TrackRepository extends JpaRepository<Track, Integer> {
 
+
     Optional<Track> getById(int id);
+
+    Track findByTrackUrl(String url);
+
 }
