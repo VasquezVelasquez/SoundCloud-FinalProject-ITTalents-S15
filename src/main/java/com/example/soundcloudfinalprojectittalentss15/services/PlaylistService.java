@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Cre
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
+import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
@@ -21,17 +22,48 @@ public class PlaylistService extends AbstractService{
 
 
     public PlaylistDTO create(CreatePlaylistDTO dto, int loggedId) {
+        int trackId = dto.getTrackId();
+        Optional<Track> optTrack = trackRepository.getById(trackId);
+        if (optTrack.isEmpty()) {
+            throw new NotFoundException("Track not found");
+        }
+        Track t = optTrack.get();
+
         Playlist playlist = mapper.map(dto, Playlist.class);
         playlist.setOwner(getUserById(loggedId));
         playlist.setPublic(dto.isPublic());
         playlist.setCreatedAt(LocalDateTime.now());
 
+        playlist.getTracks().add(t);
+        t.getPlaylists().add(playlist);
+
         playlistRepository.save(playlist);
+        trackRepository.save(t);
         return mapper.map(playlist, PlaylistDTO.class);
     }
 
     public PlaylistDTO addTrack(int playlistId, int trackId, int loggedId) {
-        return null;
+        Optional<Playlist> opt = playlistRepository.findById(playlistId);
+        if (opt.isEmpty()) {
+            throw new NotFoundException("Playlist not found");
+        }
+
+        Playlist p = opt.get();
+        if (p.getOwner().getId() != loggedId) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
+
+        Optional<Track> optTrack = trackRepository.findById(trackId);
+        if (optTrack.isEmpty()) {
+            throw new NotFoundException("Track not found");
+        }
+
+        Track t = optTrack.get();
+        p.getTracks().add(t);
+        t.getPlaylists().add(p);
+        trackRepository.save(t);
+        playlistRepository.save(p);
+        return mapper.map(p, PlaylistDTO.class);
     }
 
     public ResponseEntity<String> deletePlaylist(int playlistId, int loggedId) {

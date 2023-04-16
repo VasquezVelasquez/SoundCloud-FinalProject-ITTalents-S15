@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,4 +33,24 @@ public class Playlist {
     private boolean isPublic;
     @Column
     private String description;
+    @ManyToMany
+    @JoinTable(
+            name = "playlists_have_tracks",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "track_id")
+    )
+    private Set<Track> tracks = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Playlist playlist = (Playlist) o;
+        return id == playlist.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

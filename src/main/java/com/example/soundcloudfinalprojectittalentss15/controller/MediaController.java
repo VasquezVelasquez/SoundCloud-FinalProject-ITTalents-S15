@@ -2,12 +2,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
-<<<<<<< HEAD
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
-=======
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
->>>>>>> b208442baa379496e383d7ef13433a733ba1ae53
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.MediaService;
 import jakarta.servlet.http.HttpServletResponse;

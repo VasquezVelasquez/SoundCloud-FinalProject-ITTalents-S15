@@ -18,5 +18,5 @@ public class CreatePlaylistDTO {
 
     private boolean isPublic;
 
-//    private int trackId;
+    private int trackId;
 }
