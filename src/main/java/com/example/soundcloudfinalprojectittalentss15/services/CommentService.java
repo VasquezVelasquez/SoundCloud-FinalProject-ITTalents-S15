@@ -37,4 +37,25 @@ public class CommentService extends AbstractService{
         commentRepository.save(comment);
         return mapper.map(comment, CommentInfoDTO.class);
     }
+
+
+    public List<CommentInfoDTO> getAllByUser(int userId) {
+        getUserById(userId);
+        List<Comment> comments = commentRepository.findByUserId(userId);
+        return comments.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public CommentInfoDTO createReply(int trackId, int commentId, String content, int userId) {
+        Track track = getTrackById(trackId);
+        User user = getUserById(userId);
+        Comment comment = getCommentById(commentId);
+        Comment reply = new Comment();
+        reply.setContent(content);
+        reply.setUser(user);
+        reply.setTrack(track);
+        reply.setPostedAt(LocalDateTime.now());
+        reply.setParentComment(comment);
+        commentRepository.save(reply);
+        return mapper.map(reply, CommentInfoDTO.class); 
+    }
 }

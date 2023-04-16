@@ -11,4 +11,5 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     List<Comment> findByTrackId(int id);
+    List<Comment> findByUserId(int id);
 }
