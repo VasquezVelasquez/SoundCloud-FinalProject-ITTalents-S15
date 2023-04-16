@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class UserController extends AbstractController{
 
@@ -69,22 +71,13 @@ public class UserController extends AbstractController{
 
         return userService.edit(dto, getLoggedId(s));
     }
-//
-//    @PostMapping("/users/edit/profile-pic")
-//    public UserWithoutPasswordDTO uploadProfilePic(@RequestBody MediaDTO dto) {
-//        return null;
-//    }
-//
-//    @PostMapping("/users/edit/background-pic")
-//    public UserWithoutPasswordDTO uploadProfilePic(@RequestBody MediaDTO dto) {
-//        return null;
-//    }
-//
-//    @PostMapping("/users/{id}/follow")
-//    public UserWithoutPasswordDTO follow(@PathVariable int id) {
-//        return null;
-//    }
-//
+
+    @PostMapping("/users/{followedId}/follow")
+    public ResponseEntity<String> follow(@PathVariable int followedId, HttpSession s) {
+        int followerId = getLoggedId(s);
+        return ResponseEntity.ok(userService.follow(followerId, followedId));
+    }
+
     @PostMapping("/users/password")
     public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO dto, HttpSession s) {
         if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
@@ -93,6 +86,11 @@ public class UserController extends AbstractController{
 
         userService.changePassword(dto, getLoggedId(s));
         return ResponseEntity.ok("Password changed successful.");
+    }
+
+    @GetMapping("/users/all")
+    public List<UserWithoutPasswordDTO> getAll(){
+        return userService.getAll();
     }
 
 

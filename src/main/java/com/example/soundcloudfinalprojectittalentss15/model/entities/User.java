@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -40,5 +42,16 @@ public class User {
     private String backgroundPictureUrl;
     @Column
     private Boolean isVerified;
+
+    @ManyToMany
+    @JoinTable(
+            name = "followers",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private Set<User> followedUsers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followedUsers")
+    private Set<User> followers = new HashSet<>();
 
 }

@@ -5,11 +5,15 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService extends AbstractService {
@@ -111,5 +115,42 @@ public class UserService extends AbstractService {
 
         u.setPassword(encoder.encode(dto.getNewPassword()));
         userRepository.save(u);
+    }
+
+    public String follow(int followerId, int followedId) {
+        if (followedId == followerId) {
+            throw new BadRequestException("Cannot follow yourself");
+        }
+
+        boolean unfollow = false;
+
+        User follower = getUserById(followerId);
+        User followed = getUserById(followedId);
+        if (followed.getFollowers().contains(follower)) {
+            followed.getFollowers().remove(follower);
+            follower.getFollowedUsers().remove(followed);
+            unfollow = true;
+        } else {
+            followed.getFollowers().add(follower);
+            follower.getFollowedUsers().add(followed);
+        }
+        userRepository.save(follower);
+        userRepository.save(follower);
+
+        String resp = "";
+        if (unfollow) {
+            resp = "You have unfollowed a user with id - " + followedId;
+        } else {
+            resp = "You followed a user with id " + followedId;
+        }
+
+        return resp;
+    }
+
+    public List<UserWithoutPasswordDTO> getAll() {
+        return userRepository.findAll()
+                .stream()
+                .map( u -> mapper.map(u, UserWithoutPasswordDTO.class))
+                .collect(Collectors.toList());
     }
 }
