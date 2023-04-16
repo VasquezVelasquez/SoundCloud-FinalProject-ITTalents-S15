@@ -1,6 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.MediaService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -36,4 +37,13 @@ public class MediaController extends AbstractController{
         resp.setContentType("image/avif");
         Files.copy(f.toPath(), resp.getOutputStream());
     }
+
+
+    @PostMapping("/tracks/{trackId}")
+    public TrackDTO uploadTrackCoverPicture(@RequestParam("file") MultipartFile file, @PathVariable int trackId, HttpSession s) {
+        return mediaService.uploadTrackCoverPicture(file, trackId, getLoggedId(s));
+    }
+
+
+
 }

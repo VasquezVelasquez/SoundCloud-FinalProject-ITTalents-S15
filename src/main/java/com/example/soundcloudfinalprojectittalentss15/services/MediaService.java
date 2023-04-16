@@ -1,8 +1,12 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.UserWithoutPasswordDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -19,8 +24,7 @@ public class MediaService extends AbstractService{
 
     @SneakyThrows
     public UserWithoutPasswordDTO uploadProfilePicture(MultipartFile file, int userId) {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = UUID.randomUUID().toString() + "." + extension;
+        String name = createFileName(file);
         File dir = new File("pictures");
         if(!dir.exists()) {
             dir.mkdirs();
@@ -46,8 +50,7 @@ public class MediaService extends AbstractService{
 
     @SneakyThrows
     public UserWithoutPasswordDTO uploadBackgroundPicture(MultipartFile file, int userId) {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String name = UUID.randomUUID().toString() + "." + extension;
+        String name = createFileName(file);
         File dir = new File("pictures");
         if(!dir.exists()) {
             dir.mkdirs();
@@ -79,4 +82,39 @@ public class MediaService extends AbstractService{
         }
         throw new NotFoundException("File not found");
     }
+
+    public TrackDTO uploadTrackCoverPicture(MultipartFile file, int trackId, int loggedId) {
+        Track track = getTrackById(trackId);
+        if(track.getOwner().getId() != loggedId) {
+            throw new UnauthorizedException("Not authorized action! ");
+        }
+        String name = createFileName(file);
+        String url = createFile(file, name);
+        track.setCoverPictureUrl(url);
+        trackRepository.save(track);
+        return mapper.map(track, TrackDTO.class);
+    }
+
+
+
+    protected String createFileName(MultipartFile file) {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        return UUID.randomUUID() + "." + extension;
+    }
+
+    @SneakyThrows
+    protected String createFile(MultipartFile file, String name) {
+        File dir = new File("pictures");
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+        File f = new File(dir, name);
+        Files.copy(file.getInputStream() , f.toPath());
+        String url = dir.getName() + File.separator + f.getName();
+        return url;
+
+    }
+
+
+
 }

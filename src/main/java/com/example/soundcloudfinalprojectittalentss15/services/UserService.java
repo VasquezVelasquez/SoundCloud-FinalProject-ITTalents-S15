@@ -56,6 +56,7 @@ public class UserService extends AbstractService {
         }
 
         u.setLastLogin(LocalDateTime.now());
+        userRepository.save(u);
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 
@@ -87,6 +88,7 @@ public class UserService extends AbstractService {
         u.setAge(dto.getAge());
         u.setGender(dto.getGender());
         u.setBio(dto.getBio());
+        userRepository.save(u);
 
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
