@@ -42,6 +42,12 @@ public class User {
     private String backgroundPictureUrl;
     @Column
     private Boolean isVerified;
+    @ManyToMany
+    @JoinTable(
+            name = "users_like_tracks",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "track_id"))
+    private Set<Track> likedTracks;
 
     @ManyToMany
     @JoinTable(

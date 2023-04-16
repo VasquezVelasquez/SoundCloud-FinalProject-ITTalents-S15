@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -29,6 +30,8 @@ public class Track {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner;
+    @ManyToMany(mappedBy = "likedTracks")
+    private Set<User> likes;
     //TODO
     //@Column
     //private double length;

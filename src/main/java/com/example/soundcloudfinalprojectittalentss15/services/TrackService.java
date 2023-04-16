@@ -72,4 +72,18 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackDTO.class);
 
     }
+
+    public TrackDTO likeTrack(int trackId, int loggedId) {
+        Track track = getTrackById(trackId);
+        User u = getUserById(loggedId);
+        if(u.getLikedTracks().contains(track)) {
+            u.getLikedTracks().remove(track);
+        }
+        else {
+            u.getLikedTracks().add(track);
+        }
+        userRepository.save(u);
+
+        return mapper.map(track, TrackDTO.class);
+    }
 }

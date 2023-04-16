@@ -39,6 +39,15 @@ public class TrackController extends AbstractController {
         return trackService.editTrack(trackId, trackEditDTO,  getLoggedId(s));
     }
 
+    @PostMapping("tracks/{id}/like")
+    public TrackDTO likeTrack(@PathVariable int id, HttpSession s) {
+        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
+            throw new BadRequestException("User is not logged in.");
+        }
+        return trackService.likeTrack(id, getLoggedId(s));
+
+    }
+
 
 
 
