@@ -42,5 +42,11 @@ public class CommentController extends AbstractController{
         return commentService.createReply(trackId, commentId, content, userId);
     }
 
+    @DeleteMapping("/track/{trackId}/comments/{commentId}")
+    public CommentInfoDTO deleteComment(@PathVariable int trackId, @PathVariable int commentId, HttpSession s) {
+        int userId = getLoggedId(s);
+        return commentService.deleteComment(trackId, commentId, userId);
+    }
+
 
 }

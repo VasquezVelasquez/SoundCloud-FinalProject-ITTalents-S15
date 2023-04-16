@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.Com
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Comment;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -56,6 +57,19 @@ public class CommentService extends AbstractService{
         reply.setPostedAt(LocalDateTime.now());
         reply.setParentComment(comment);
         commentRepository.save(reply);
-        return mapper.map(reply, CommentInfoDTO.class); 
+        return mapper.map(reply, CommentInfoDTO.class);
+    }
+
+
+    public CommentInfoDTO deleteComment(int trackId, int commentId, int userId) {
+        Track track = getTrackById(trackId);
+        Comment comment = getCommentById(commentId);
+        User user = getUserById(userId);
+        if((track.getOwner().getId() != userId) && (comment.getUser().getId() != userId)) {
+            throw new UnauthorizedException("User cannot access this operation! ");
+        }
+        CommentInfoDTO commentInfoDTO = mapper.map(comment, CommentInfoDTO.class);
+        commentRepository.delete(comment);
+        return commentInfoDTO; 
     }
 }
