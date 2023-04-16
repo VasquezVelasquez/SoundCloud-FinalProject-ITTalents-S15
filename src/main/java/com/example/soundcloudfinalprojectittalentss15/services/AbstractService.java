@@ -6,9 +6,13 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundE
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.CommentRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.TrackRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.UserRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Service
 public abstract class AbstractService {
@@ -29,6 +33,8 @@ public abstract class AbstractService {
     protected Track getTrackById(int id){
         return trackRepository.findById(id).orElseThrow(() -> new NotFoundException("Track not found"));
     }
+
+
 
 //    protected User getUserById(int id){
 //        return userRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException("User not found"));

@@ -20,6 +20,9 @@ public class TrackController extends AbstractController {
 
     @PostMapping("/tracks")
     public TrackUrlDTO upload(@RequestParam("track")MultipartFile trackFile, HttpSession s) {
+        if(!isValidAudioFile(trackFile)) {
+            throw new BadRequestException("File type not accepted!");
+        }
         return trackService.upload(trackFile,  getLoggedId(s));
     }
 
