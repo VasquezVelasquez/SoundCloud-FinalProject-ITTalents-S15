@@ -48,6 +48,23 @@ public class TrackController extends AbstractController {
 
     }
 
+    @DeleteMapping("tracks/{id}")
+    public TrackDTO deleteTrack(@PathVariable int id, HttpSession s) {
+        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
+            throw new BadRequestException("User is not logged in.");
+        }
+        return trackService.deleteTrack(id, getLoggedId(s));
+
+    }
+
+    @GetMapping("tracks/{id}")
+    public TrackDTO getTrackById(@PathVariable int id) {
+        return trackService.showTrackById(id);
+    }
+
+
+
+
 
 
 

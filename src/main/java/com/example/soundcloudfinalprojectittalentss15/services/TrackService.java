@@ -85,4 +85,20 @@ public class TrackService extends AbstractService{
 
         return mapper.map(track, TrackDTO.class);
     }
+
+    public TrackDTO deleteTrack(int trackId, int loggedId) {
+        Track track = getTrackById(trackId);
+        if(track.getOwner().getId() != loggedId) {
+            throw new UnauthorizedException("Action not allowed! ");
+        }
+        TrackDTO trackDTO = mapper.map(track, TrackDTO.class);
+        trackRepository.deleteById(trackId);
+        return trackDTO;
+
+    }
+
+    public TrackDTO showTrackById(int id) {
+        Track track  = getTrackById(id);
+        return mapper.map(track, TrackDTO.class);
+    }
 }

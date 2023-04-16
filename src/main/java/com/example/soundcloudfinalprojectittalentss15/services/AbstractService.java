@@ -1,5 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
+import com.example.soundcloudfinalprojectittalentss15.model.entities.Comment;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
@@ -40,6 +41,10 @@ public abstract class AbstractService {
 
     protected Playlist getPlaylistById(int id) {
         return playlistRepository.findById(id).orElseThrow(() -> new NotFoundException("Playlist not found"));
+    }
+
+    protected Comment getCommentById(int id) {
+        return commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Comment not found"));
     }
 
 

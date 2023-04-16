@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.Com
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Comment;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,5 +37,39 @@ public class CommentService extends AbstractService{
         comment.setPostedAt(LocalDateTime.now());
         commentRepository.save(comment);
         return mapper.map(comment, CommentInfoDTO.class);
+    }
+
+
+    public List<CommentInfoDTO> getAllByUser(int userId) {
+        getUserById(userId);
+        List<Comment> comments = commentRepository.findByUserId(userId);
+        return comments.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public CommentInfoDTO createReply(int trackId, int commentId, String content, int userId) {
+        Track track = getTrackById(trackId);
+        User user = getUserById(userId);
+        Comment comment = getCommentById(commentId);
+        Comment reply = new Comment();
+        reply.setContent(content);
+        reply.setUser(user);
+        reply.setTrack(track);
+        reply.setPostedAt(LocalDateTime.now());
+        reply.setParentComment(comment);
+        commentRepository.save(reply);
+        return mapper.map(reply, CommentInfoDTO.class);
+    }
+
+
+    public CommentInfoDTO deleteComment(int trackId, int commentId, int userId) {
+        Track track = getTrackById(trackId);
+        Comment comment = getCommentById(commentId);
+        User user = getUserById(userId);
+        if((track.getOwner().getId() != userId) && (comment.getUser().getId() != userId)) {
+            throw new UnauthorizedException("User cannot access this operation! ");
+        }
+        CommentInfoDTO commentInfoDTO = mapper.map(comment, CommentInfoDTO.class);
+        commentRepository.delete(comment);
+        return commentInfoDTO; 
     }
 }

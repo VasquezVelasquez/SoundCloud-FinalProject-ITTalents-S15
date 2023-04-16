@@ -43,6 +43,8 @@ public class User {
     private String backgroundPictureUrl;
     @Column
     private Boolean isVerified;
+    @OneToMany(mappedBy = "user")
+    private Set<Comment> comments;
     @ManyToMany
     @JoinTable(
             name = "users_like_tracks",
@@ -51,18 +53,16 @@ public class User {
     private Set<Track> likedTracks;
 
     @ManyToMany
-    @JoinTable(
-            name = "followers",
+    @JoinTable(name = "followers",
             joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "followed_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "followed_id"))
     private Set<User> followedUsers = new HashSet<>();
-
     @ManyToMany(mappedBy = "followedUsers")
     private Set<User> followers = new HashSet<>();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Playlist> playlists = new HashSet<>();
+
 
     @Override
     public boolean equals(Object o) {
