@@ -70,10 +70,7 @@ public abstract class AbstractController {
         return (int) s.getAttribute("LOGGED_ID");
     }
 
-    public boolean isValidAudioFile(MultipartFile file) {
-        String contentType = file.getContentType();
-        return contentType != null && contentType.equalsIgnoreCase("audio/mpeg");
-    }
+
 
     public boolean isValidPictureFile(MultipartFile file) {
         String contentType = file.getContentType();

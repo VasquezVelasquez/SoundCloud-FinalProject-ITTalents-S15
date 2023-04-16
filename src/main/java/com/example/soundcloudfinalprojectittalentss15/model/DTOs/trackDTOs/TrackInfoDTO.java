@@ -10,12 +10,13 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @NoArgsConstructor
-public class TrackDTO {
+public class TrackInfoDTO {
 
     private String title;
     private LocalDateTime uploadedAt;
     private String description;
-    private Boolean isPublic;
+    private boolean isPublic;
     private String trackUrl;
     private String ownerDisplayName;
+    private int plays;
 }
