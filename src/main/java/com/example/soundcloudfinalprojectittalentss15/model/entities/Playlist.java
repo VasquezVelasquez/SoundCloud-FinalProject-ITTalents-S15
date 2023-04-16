@@ -46,11 +46,11 @@ public class Playlist {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Playlist playlist = (Playlist) o;
-        return id == playlist.id;
+        return id == playlist.id && title.equals(playlist.title) && owner.equals(playlist.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, title, owner);
     }
 }

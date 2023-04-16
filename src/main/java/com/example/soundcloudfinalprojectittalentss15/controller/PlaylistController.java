@@ -35,6 +35,11 @@ public class PlaylistController extends AbstractController{
         return playlistService.deletePlaylist(playlistId, getLoggedId(s));
     }
 
+    @DeleteMapping("/{playlistId}/tracks/{trackId}")
+    public PlaylistDTO removeTrackById(@PathVariable int playlistId, @PathVariable int trackId, HttpSession s) {
+        return playlistService.removeTrackById(playlistId, trackId, getLoggedId(s));
+    }
+
     @GetMapping("/users/{id}/playlists")
     public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable int id, HttpSession s) {
         if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {

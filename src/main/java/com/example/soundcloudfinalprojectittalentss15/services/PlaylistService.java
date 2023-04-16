@@ -29,16 +29,22 @@ public class PlaylistService extends AbstractService{
         }
         Track t = optTrack.get();
 
+        if (playlistRepository.existsByTitle(dto.getTitle())) {
+            throw new BadRequestException("Playlist with this title already exists");
+        }
+
         Playlist playlist = mapper.map(dto, Playlist.class);
+
+        playlist.setTitle(dto.getTitle());
         playlist.setOwner(getUserById(loggedId));
         playlist.setPublic(dto.isPublic());
         playlist.setCreatedAt(LocalDateTime.now());
 
         playlist.getTracks().add(t);
         t.getPlaylists().add(playlist);
-
         playlistRepository.save(playlist);
-        trackRepository.save(t);
+
+
         return mapper.map(playlist, PlaylistDTO.class);
     }
 
@@ -121,5 +127,17 @@ public class PlaylistService extends AbstractService{
         return playlists.stream()
                 .map(playlist -> mapper.map(playlist, PlaylistDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public PlaylistDTO removeTrackById(int playlistId, int trackId, int loggedId) {
+        Optional<Playlist> opt = playlistRepository.getPlaylistsById(playlistId);
+        if (opt.isEmpty()) {
+            throw new NotFoundException("Playlist not found");
+        }
+
+        Playlist p = opt.get();
+
+
+        return null;
     }
 }
