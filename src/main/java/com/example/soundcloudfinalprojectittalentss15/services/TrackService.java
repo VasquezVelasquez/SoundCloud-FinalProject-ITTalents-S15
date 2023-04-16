@@ -6,6 +6,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -86,5 +87,18 @@ public class TrackService extends AbstractService{
     public TrackInfoDTO showTrackById(int id) {
         Track track  = getTrackById(id);
         return mapper.map(track, TrackInfoDTO.class);
+    }
+
+    public File download(String url) {
+        File dir = new File("tracks");
+        File track = new File(dir, url);
+        if(track.exists()) {
+            Track file = trackRepository.findByTrackUrl(url);
+            file.setPlays(file.getPlays() + 1);
+            trackRepository.save(file); 
+            return track;
+        }
+        throw new NotFoundException("Track not foind");
+
     }
 }
