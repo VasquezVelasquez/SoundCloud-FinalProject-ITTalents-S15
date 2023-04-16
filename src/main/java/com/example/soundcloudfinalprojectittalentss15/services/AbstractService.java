@@ -9,12 +9,15 @@ import com.example.soundcloudfinalprojectittalentss15.model.repositories.Comment
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.PlaylistRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.TrackRepository;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.UserRepository;
+import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.UUID;
 
 @Service
@@ -45,6 +48,29 @@ public abstract class AbstractService {
 
     protected Comment getCommentById(int id) {
         return commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Comment not found"));
+    }
+
+    @SneakyThrows
+    protected String createFile(MultipartFile file, String name, String folderName) {
+        File dir = new File(folderName);
+        if(!dir.exists()) {
+            dir.mkdirs();
+        }
+        File f = new File(dir, name);
+        Files.copy(file.getInputStream() , f.toPath());
+        String url = dir.getName() + File.separator + f.getName();
+        return url;
+
+    }
+
+    protected String createFileName(MultipartFile file) {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        return UUID.randomUUID() + "." + extension;
+    }
+
+    public boolean isValidAudioFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && contentType.equalsIgnoreCase("audio/mpeg");
     }
 
 

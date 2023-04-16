@@ -34,11 +34,8 @@ public class Track {
     private User owner;
     @ManyToMany(mappedBy = "likedTracks")
     private Set<User> likes;
+    @Column
+    private int plays;
 
-    //TODO
-    //@Column
-    //private double length;
-    //@Column
-    //private int plays;
 
 }
