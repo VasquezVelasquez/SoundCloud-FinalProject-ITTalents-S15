@@ -3,6 +3,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.MediaService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -42,6 +43,9 @@ public class MediaController extends AbstractController{
 
     @PostMapping("/tracks/{trackId}")
     public TrackDTO uploadTrackCoverPicture(@RequestParam("file") MultipartFile file, @PathVariable int trackId, HttpSession s) {
+        if(!isValidPictureFile(file)) {
+            throw new BadRequestException("File type not accepted!");
+        }
         return mediaService.uploadTrackCoverPicture(file, trackId, getLoggedId(s));
     }
 
