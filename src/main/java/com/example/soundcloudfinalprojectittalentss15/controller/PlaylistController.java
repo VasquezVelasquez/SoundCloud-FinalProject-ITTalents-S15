@@ -73,4 +73,10 @@ public class PlaylistController extends AbstractController{
         return playlistService.likePlaylist(id, userId);
     }
 
+    @GetMapping("/playlists/liked")
+    public List<PlaylistDTO> getLikedPlaylists(HttpSession s) {
+        int id = getLoggedId(s);
+        return playlistService.getLikedPlaylists(id);
+    }
+
 }

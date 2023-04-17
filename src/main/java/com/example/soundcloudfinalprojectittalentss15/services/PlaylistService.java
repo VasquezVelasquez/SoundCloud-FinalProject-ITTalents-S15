@@ -3,14 +3,12 @@ package com.example.soundcloudfinalprojectittalentss15.services;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreatePlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
-import com.example.soundcloudfinalprojectittalentss15.model.repositories.PlaylistRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -143,7 +141,7 @@ public class PlaylistService extends AbstractService{
 
 
     public List<PlaylistDTO> getPlaylistsByName(String name) {
-        List<Playlist> playlists = playlistRepository.getAllByTitleContaining(name);
+        List<Playlist> playlists = playlistRepository.getAllByTitleContainingIgnoreCase(name);
         return playlists.stream()
                 .map(playlist -> mapper.map(playlist, PlaylistDTO.class))
                 .collect(Collectors.toList());
@@ -169,5 +167,12 @@ public class PlaylistService extends AbstractService{
         playlistRepository.save(p);
 
         return mapper.map(p, PlaylistDTO.class);
+    }
+
+    public List<PlaylistDTO> getLikedPlaylists(int id) {
+        List<Playlist> playlists = playlistRepository.findAllLikedPlaylistsByUserId(id);
+        return playlists.stream()
+                .map(playlist -> mapper.map(playlist, PlaylistDTO.class))
+                .collect(Collectors.toList());
     }
 }
