@@ -13,11 +13,10 @@ public class RegisterDTO {
 
     @Email(message = "Invalid email")
     private String email;
-
+    //todo add proper message
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Weak pass")
     private String password;
 
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Weak pass")
     private String confirmedPassword;
 
     @NotEmpty(message = "Display name cannot be empty")
@@ -25,7 +24,7 @@ public class RegisterDTO {
     @Pattern(regexp = "^[a-zA-Z]+$", message = "Display name can only contain letters")
     private String displayName;
 
-    @Min(value = 14, message = "You must be at least 18 years old")
+    @Min(value = 14, message = "You must be at least 14 years old")
     @Max(value = 100, message = "You must be younger than 100 years old")
     private int age;
 

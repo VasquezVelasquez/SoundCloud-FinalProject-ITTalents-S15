@@ -63,7 +63,7 @@ public class UserController extends AbstractController{
     }
 
     @PutMapping("/users")
-    public UserWithoutPasswordDTO edit(@RequestBody EditDTO dto, HttpSession s) {
+    public UserWithoutPasswordDTO edit(@Valid @RequestBody EditDTO dto, HttpSession s) {
         if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
             throw new BadRequestException("User is not logged in.");
         }
@@ -78,7 +78,7 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/users/password")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDTO dto, HttpSession s) {
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordDTO dto, HttpSession s) {
         if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
             throw new BadRequestException("User is not logged in.");
         }
