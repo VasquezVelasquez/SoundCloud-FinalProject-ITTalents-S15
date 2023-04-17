@@ -1,8 +1,11 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagRequestDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
+import com.example.soundcloudfinalprojectittalentss15.services.TagService;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -22,7 +25,10 @@ import java.util.List;
 public class TrackController extends AbstractController {
 
     @Autowired
-    TrackService trackService;
+    private TrackService trackService;
+
+    @Autowired
+    private TagService tagService;
 
 
     @PostMapping("/tracks")
@@ -85,6 +91,15 @@ public class TrackController extends AbstractController {
     public Page<TrackInfoDTO> getAllPublicTracksWithPagination(@RequestParam(name = "page", defaultValue = "0") int pageNumber) {
         return trackService.getAllPublicTracksWithPagination(pageNumber);
 
+    }
+
+    @PostMapping("tracks/{trackId}/tags")
+    public TrackInfoDTO addTagsToTrack(@PathVariable int trackId, @RequestBody List<TagDTO> tagDTOs, HttpSession s) {
+        int userId = getLoggedId(s);
+        TagRequestDTO request = new TagRequestDTO();
+        request.setTrackId(trackId);
+        request.setTags(tagDTOs);
+        return tagService.addTagsToTrack(request, userId);
     }
 
 

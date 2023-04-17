@@ -5,10 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
-import com.example.soundcloudfinalprojectittalentss15.model.repositories.CommentRepository;
-import com.example.soundcloudfinalprojectittalentss15.model.repositories.PlaylistRepository;
-import com.example.soundcloudfinalprojectittalentss15.model.repositories.TrackRepository;
-import com.example.soundcloudfinalprojectittalentss15.model.repositories.UserRepository;
+import com.example.soundcloudfinalprojectittalentss15.model.repositories.*;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
@@ -33,6 +30,9 @@ public abstract class AbstractService {
     protected ModelMapper mapper;
     @Autowired
     protected CommentRepository commentRepository;
+
+    @Autowired
+    protected TagRepository tagRepository;
 
     protected User getUserById(int id){
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
