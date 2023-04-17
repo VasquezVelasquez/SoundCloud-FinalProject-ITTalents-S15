@@ -2,10 +2,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUrlDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
@@ -15,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.List;
 
 
 @RestController
@@ -33,27 +31,21 @@ public class TrackController extends AbstractController {
 
     @PutMapping("/tracks/{trackId}")
     public TrackInfoDTO editTrack(@PathVariable int trackId, @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
-        return trackService.editTrack(trackId, trackEditDTO,  getLoggedId(s));
+        int userId = getLoggedId(s);
+        return trackService.editTrack(trackId, trackEditDTO, userId);
     }
 
     @PostMapping("tracks/{id}/like")
     public TrackInfoDTO likeTrack(@PathVariable int id, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
-        return trackService.likeTrack(id, getLoggedId(s));
+        int userId = getLoggedId(s);
+        return trackService.likeTrack(id, userId);
 
     }
 
     @DeleteMapping("tracks/{id}")
     public TrackInfoDTO deleteTrack(@PathVariable int id, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
-        return trackService.deleteTrack(id, getLoggedId(s));
+        int userId = getLoggedId(s);
+        return trackService.deleteTrack(id, userId);
 
     }
 
@@ -67,10 +59,15 @@ public class TrackController extends AbstractController {
     public void playTrack(@PathVariable("url") String url, HttpServletResponse response) {
         File track = trackService.download(url);
         Files.copy(track.toPath(), response.getOutputStream());
+    }
 
-
+    @GetMapping("/users/{userId}/tracks")
+    public List<TrackInfoDTO> getAllTracksByUser(@PathVariable int userId) {
+        return trackService.getAllTracksByUser(userId);
 
     }
+
+
 
 
 
