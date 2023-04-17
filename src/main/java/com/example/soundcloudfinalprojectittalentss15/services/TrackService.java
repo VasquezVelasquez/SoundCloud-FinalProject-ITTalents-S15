@@ -9,9 +9,13 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadReques
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Pageable;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -112,4 +116,21 @@ public class TrackService extends AbstractService{
                 .collect(Collectors.toList());
 
     }
+
+    public List<TrackInfoDTO> searchTracksByTitle(String title) {
+
+        List<Track> tracks = trackRepository.findAllByTitleContainingIgnoreCase(title);
+        return tracks.stream()
+                .map(t -> mapper.map(t, TrackInfoDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public Page<TrackInfoDTO> getAllPublicTracksWithPagination(int pageNumber) {
+        int pageSize = 10;
+        org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "uploadedAt"));
+        Page<Track> tracksPage = trackRepository.findByIsPublicTrue(pageable);
+
+        return tracksPage.map(track -> mapper.map(track, TrackInfoDTO.class));
+    }
+
 }

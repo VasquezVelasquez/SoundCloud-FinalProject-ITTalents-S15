@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,6 +65,17 @@ public class TrackController extends AbstractController {
     @GetMapping("/users/{userId}/tracks")
     public List<TrackInfoDTO> getAllTracksByUser(@PathVariable int userId) {
         return trackService.getAllTracksByUser(userId);
+
+    }
+
+    @GetMapping("/tracks/search")
+    public List<TrackInfoDTO> searchTracksByTitle(@RequestParam("title") String title) {
+        return trackService.searchTracksByTitle(title);
+    }
+
+    @GetMapping("/tracks")
+    public Page<TrackInfoDTO> getAllPublicTracksWithPagination(@RequestParam(name = "page", defaultValue = "0") int pageNumber) {
+        return trackService.getAllPublicTracksWithPagination(pageNumber);
 
     }
 
