@@ -1,6 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs;
 
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,6 @@ public class TrackInfoDTO {
     private String description;
     private boolean isPublic;
     private String trackUrl;
-    private String ownerDisplayName;
+    private UserWithoutPasswordDTO owner;
     private int plays;
 }

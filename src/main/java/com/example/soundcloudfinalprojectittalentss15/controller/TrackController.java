@@ -2,9 +2,11 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,12 +28,18 @@ public class TrackController extends AbstractController {
     @PostMapping("/tracks")
     public TrackInfoDTO upload(@RequestParam("track")MultipartFile trackFile, @RequestParam String title,
                               @RequestParam String description, @RequestParam boolean isPublic,  HttpSession s) {
+        if(title.length() >= 255) {
+            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+        }
+        if(description.length() >= 500) {
+            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+        }
 
         return trackService.upload(trackFile, title, description, isPublic,  getLoggedId(s));
     }
 
     @PutMapping("/tracks/{trackId}")
-    public TrackInfoDTO editTrack(@PathVariable int trackId, @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
+    public TrackInfoDTO editTrack(@PathVariable int trackId,@Valid @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
         int userId = getLoggedId(s);
         return trackService.editTrack(trackId, trackEditDTO, userId);
     }

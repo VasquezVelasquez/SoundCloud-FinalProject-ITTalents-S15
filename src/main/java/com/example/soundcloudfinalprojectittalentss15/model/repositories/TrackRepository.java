@@ -22,4 +22,7 @@ public interface TrackRepository extends JpaRepository<Track, Integer> {
     List<Track> findAllByTitleContainingIgnoreCase(String title);
 
     Page<Track> findByIsPublicTrue(Pageable pageable);
+
+    Page<Track> findAll(Pageable pageable);
+
 }

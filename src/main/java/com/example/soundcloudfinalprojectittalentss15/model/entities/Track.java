@@ -40,6 +40,13 @@ public class Track {
     private int plays;
     @ManyToMany(mappedBy = "tracks")
     private Set<Playlist> playlists = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "tracks_have_tags",
+            joinColumns = @JoinColumn(name = "track_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
     @Override
     public boolean equals(Object o) {
