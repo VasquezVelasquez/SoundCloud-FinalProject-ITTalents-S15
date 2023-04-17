@@ -1,6 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
@@ -11,11 +12,11 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.Unauthori
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -131,6 +132,15 @@ public class TrackService extends AbstractService{
         Page<Track> tracksPage = trackRepository.findByIsPublicTrue(pageable);
 
         return tracksPage.map(track -> mapper.map(track, TrackInfoDTO.class));
+    }
+
+    public Page<TrackInfoDTO> searchTracksByTags(TagSearchDTO request) {
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(request.getPage(), pageSize);
+        List<String> tags = request.getTags();
+        long tagCount = tags.size();
+        Page<Track> trackPage = trackRepository.findByTags(tags, tagCount, pageable);
+        return trackPage.map(t -> mapper.map(t, TrackInfoDTO.class));
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagRequestDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
@@ -100,6 +101,12 @@ public class TrackController extends AbstractController {
         request.setTrackId(trackId);
         request.setTags(tagDTOs);
         return tagService.addTagsToTrack(request, userId);
+    }
+
+    @PostMapping("tracks/search")
+    public Page<TrackInfoDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {
+        return trackService.searchTracksByTags(request);
+
     }
 
 
