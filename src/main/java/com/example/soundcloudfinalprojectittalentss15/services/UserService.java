@@ -118,7 +118,7 @@ public class UserService extends AbstractService {
     }
 
     public FollowDTO follow(int followerId, int followedId) {
-        if (followedId == followerId) {
+        if (followerId == followedId) {
             throw new BadRequestException("Cannot follow yourself");
         }
 
@@ -126,6 +126,7 @@ public class UserService extends AbstractService {
 
         User follower = getUserById(followerId);
         User followed = getUserById(followedId);
+
         if (followed.getFollowers().contains(follower)) {
             followed.getFollowers().remove(follower);
             follower.getFollowedUsers().remove(followed);
@@ -164,5 +165,21 @@ public class UserService extends AbstractService {
         followDTO.setFollowEventAt(LocalDateTime.now());
 
         return followDTO;
+    }
+
+    public List<UserWithoutPasswordDTO> getFollowers(int loggedId) {
+        List<User> followers = userRepository.getFollowers(loggedId);
+
+        return followers.stream()
+                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<UserWithoutPasswordDTO> getFollowed(int loggedId) {
+        List<User> followed = userRepository.getFollowed(loggedId);
+
+        return followed.stream()
+                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
+                .collect(Collectors.toList());
     }
 }

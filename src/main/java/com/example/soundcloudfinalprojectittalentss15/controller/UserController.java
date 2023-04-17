@@ -74,7 +74,7 @@ public class UserController extends AbstractController{
     @PostMapping("/users/{followedId}/follow")
     public FollowDTO follow(@PathVariable int followedId, HttpSession s) {
         int followerId = getLoggedId(s);
-        return userService.follow(followedId, followerId);
+        return userService.follow(followerId, followedId);
     }
 
     @PostMapping("/users/password")
@@ -90,6 +90,16 @@ public class UserController extends AbstractController{
     @GetMapping("/users/all")
     public List<UserWithoutPasswordDTO> getAll(){
         return userService.getAll();
+    }
+
+    @GetMapping("/users/followers")
+    public List<UserWithoutPasswordDTO> getFollowers(HttpSession s) {
+        return userService.getFollowers(getLoggedId(s));
+    }
+
+    @GetMapping("/users/followed")
+    public List<UserWithoutPasswordDTO> getFollowed(HttpSession s) {
+        return userService.getFollowed(getLoggedId(s));
     }
 
 
