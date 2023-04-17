@@ -35,7 +35,7 @@ public class PlaylistController extends AbstractController{
         return playlistService.deletePlaylist(playlistId, getLoggedId(s));
     }
 
-    @DeleteMapping("/{playlistId}/tracks/{trackId}")
+    @DeleteMapping("/playlists/{playlistId}/tracks/{trackId}")
     public PlaylistDTO removeTrackById(@PathVariable int playlistId, @PathVariable int trackId, HttpSession s) {
         return playlistService.removeTrackById(playlistId, trackId, getLoggedId(s));
     }

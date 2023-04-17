@@ -3,6 +3,7 @@ package com.example.soundcloudfinalprojectittalentss15.services;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreatePlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
@@ -136,8 +137,17 @@ public class PlaylistService extends AbstractService{
         }
 
         Playlist p = opt.get();
+        if (p.getOwner().getId() != loggedId) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
 
+        Optional<Track> optTrack = trackRepository.getById(trackId);
+        if (optTrack.isEmpty()) {
+            throw new NotFoundException("Track not found");
+        }
 
-        return null;
+        playlistRepository.removeTrackFromPlaylist(playlistId, trackId);
+
+        return mapper.map(p, PlaylistDTO.class);
     }
 }
