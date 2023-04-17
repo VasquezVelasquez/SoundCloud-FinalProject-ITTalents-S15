@@ -6,6 +6,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Pla
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
+import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
@@ -21,6 +22,24 @@ import java.util.stream.Collectors;
 @Service
 public class PlaylistService extends AbstractService{
 
+
+    public PlaylistDTO likePlaylist(int id, int userId) {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+        if (optionalPlaylist.isEmpty()) {
+            throw new NotFoundException("Playlist not found");
+        }
+        Playlist p = optionalPlaylist.get();
+        User u = getUserById(userId);
+
+        if (u.getLikedPlaylists().contains(p)) {
+            u.getLikedPlaylists().remove(p);
+        } else {
+            u.getLikedPlaylists().add(p);
+        }
+        userRepository.save(u);
+
+        return mapper.map(p, PlaylistDTO.class);
+    }
 
     public PlaylistDTO create(CreatePlaylistDTO dto, int loggedId) {
         int trackId = dto.getTrackId();
@@ -147,6 +166,7 @@ public class PlaylistService extends AbstractService{
         }
 
         playlistRepository.removeTrackFromPlaylist(playlistId, trackId);
+        playlistRepository.save(p);
 
         return mapper.map(p, PlaylistDTO.class);
     }

@@ -65,6 +65,16 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Track> tracks;
 
+    @ManyToMany
+    @JoinTable(
+            name = "users_like_playlists",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "playlist_id"))
+    private Set<Playlist> likedPlaylists;
+
+    @ManyToMany(mappedBy = "likedPlaylists")
+    private Set<User> likedBy;
+
 
 
     @Override

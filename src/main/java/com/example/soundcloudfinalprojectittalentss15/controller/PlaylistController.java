@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Cre
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.TrackIdDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.PlaylistService;
@@ -64,6 +65,12 @@ public class PlaylistController extends AbstractController{
         } else {
             return playlistService.getPlaylistsByName(name);
         }
+    }
+
+    @PostMapping("playlists/{id}/like")
+    public PlaylistDTO likePlaylist(@PathVariable int id, HttpSession s) {
+        int userId = getLoggedId(s);
+        return playlistService.likePlaylist(id, userId);
     }
 
 }
