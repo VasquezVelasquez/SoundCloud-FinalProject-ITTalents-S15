@@ -1,7 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagRequestDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagTrackRequestDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
@@ -97,7 +97,7 @@ public class TrackController extends AbstractController {
     @PostMapping("tracks/{trackId}/tags")
     public TrackInfoDTO addTagsToTrack(@PathVariable int trackId, @RequestBody List<TagDTO> tagDTOs, HttpSession s) {
         int userId = getLoggedId(s);
-        TagRequestDTO request = new TagRequestDTO();
+        TagTrackRequestDTO request = new TagTrackRequestDTO();
         request.setTrackId(trackId);
         request.setTags(tagDTOs);
         return tagService.addTagsToTrack(request, userId);

@@ -3,12 +3,18 @@ package com.example.soundcloudfinalprojectittalentss15.services;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreatePlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import com.example.soundcloudfinalprojectittalentss15.model.repositories.PlaylistRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -174,5 +180,14 @@ public class PlaylistService extends AbstractService{
         return playlists.stream()
                 .map(playlist -> mapper.map(playlist, PlaylistDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public Page<PlaylistDTO> searchPlaylistsByTags(TagSearchDTO request) {
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(request.getPage(), pageSize);
+        List<String> tags = request.getTags();
+        long tagCount = tags.size();
+        Page<Playlist> playlistPage = playlistRepository.findByTags(tags, tagCount, pageable);
+        return playlistPage.map(p -> mapper.map(p, PlaylistDTO.class));
     }
 }

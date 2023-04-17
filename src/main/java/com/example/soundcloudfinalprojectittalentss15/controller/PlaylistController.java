@@ -4,12 +4,17 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Cre
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.TrackIdDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagPlaylistRequestDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagTrackRequestDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.PlaylistService;
+import com.example.soundcloudfinalprojectittalentss15.services.TagService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +25,9 @@ public class PlaylistController extends AbstractController{
 
     @Autowired
     private PlaylistService playlistService;
+
+    @Autowired
+    private TagService tagService;
 
     @PostMapping("/playlists")
     public PlaylistDTO create(@RequestBody CreatePlaylistDTO dto, HttpSession s) {
@@ -77,6 +85,21 @@ public class PlaylistController extends AbstractController{
     public List<PlaylistDTO> getLikedPlaylists(HttpSession s) {
         int id = getLoggedId(s);
         return playlistService.getLikedPlaylists(id);
+    }
+
+    @PostMapping("playlists/{playlistId}/tags")
+    public PlaylistDTO addTagsToPlaylist(@PathVariable int playlistId, @RequestBody List<TagDTO> tagDTOs, HttpSession s) {
+        int userId = getLoggedId(s);
+        TagPlaylistRequestDTO request = new TagPlaylistRequestDTO();
+        request.setPlaylistId(playlistId);
+        request.setTags(tagDTOs);
+        return tagService.addTagsToPlaylist(request, userId);
+    }
+
+    @PostMapping("playlists/search")
+    public Page<PlaylistDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {
+        return playlistService.searchPlaylistsByTags(request);
+
     }
 
 }

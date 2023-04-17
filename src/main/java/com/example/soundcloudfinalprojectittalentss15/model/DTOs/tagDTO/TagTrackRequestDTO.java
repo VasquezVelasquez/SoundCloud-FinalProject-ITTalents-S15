@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TagRequestDTO {
+public class TagTrackRequestDTO {
     private int trackId;
     private List<TagDTO> tags;
 

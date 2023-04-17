@@ -40,6 +40,13 @@ public class Playlist {
             inverseJoinColumns = @JoinColumn(name = "track_id")
     )
     private Set<Track> tracks = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "playlists_have_tags",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags;
 
     @Override
     public boolean equals(Object o) {

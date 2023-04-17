@@ -18,6 +18,8 @@ public class Tag {
     private String name;
     @ManyToMany(mappedBy = "tags")
     private Set<Track> tracks;
+    @ManyToMany(mappedBy = "tags")
+    private Set<Playlist> playlists;
 
 
 
