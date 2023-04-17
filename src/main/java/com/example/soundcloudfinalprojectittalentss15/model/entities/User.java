@@ -62,6 +62,9 @@ public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Playlist> playlists = new HashSet<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Track> tracks;
+
 
 
     @Override
