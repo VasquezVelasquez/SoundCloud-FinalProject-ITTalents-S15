@@ -91,7 +91,6 @@ public class TrackService extends AbstractService{
         TrackInfoDTO trackInfoDTO = mapper.map(track, TrackInfoDTO.class);
         trackRepository.deleteById(trackId);
         return trackInfoDTO;
-
     }
 
     public TrackInfoDTO showTrackById(int id) {
@@ -111,7 +110,6 @@ public class TrackService extends AbstractService{
             return track;
         }
         throw new NotFoundException("Track not found");
-
     }
 
     public List<TrackInfoDTO> getAllTracksByUser(int userId) {

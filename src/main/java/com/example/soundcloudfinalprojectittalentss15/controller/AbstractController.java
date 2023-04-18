@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.ErrorD
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -83,6 +84,7 @@ public abstract class AbstractController {
         }
     }
 
+    //TODO use it
     public boolean isValidPictureFile(MultipartFile file) {
         String contentType = file.getContentType();
         boolean isValidImage = contentType != null &&
@@ -90,13 +92,10 @@ public abstract class AbstractController {
         return isValidImage;
     }
 
-
-    
-
-
-
-
-
+    protected String getRequestSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
 
 
 }

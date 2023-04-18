@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,5 +34,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query(value = "SELECT u.* FROM followers AS f JOIN users AS u ON u.id = f.followed_id WHERE f.follower_id = :userId", nativeQuery = true)
     List<User> getFollowed(int userId);
 
+    @Query("SELECT u FROM users AS u WHERE u.isVerified = false AND u.createdAt < :dateTimeThreshold")
+    List<User> findNonVerifiedUsersRegisteredBefore(LocalDateTime dateTimeThreshold);
 
+    Optional<User> findByVerificationCode(String code);
 }

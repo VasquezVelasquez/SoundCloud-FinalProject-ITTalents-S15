@@ -28,6 +28,8 @@ public class User {
     @Column
     private String gender;
     @Column
+    private String verificationCode;
+    @Column
     private String firstName;
     @Column
     private String lastName;

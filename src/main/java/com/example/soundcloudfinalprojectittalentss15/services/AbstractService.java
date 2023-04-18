@@ -34,7 +34,6 @@ public abstract class AbstractService {
     protected ModelMapper mapper;
     @Autowired
     protected CommentRepository commentRepository;
-
     @Autowired
     protected TagRepository tagRepository;
 

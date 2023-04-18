@@ -5,6 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
+import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,20 +21,27 @@ public class UserService extends AbstractService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    private EmailSenderService emailService;
+
     @Transactional
-    public UserWithoutPasswordDTO register(RegisterDTO dto) {
-        if (!dto.getPassword().equals(dto.getConfirmedPassword())) {
-            throw new BadRequestException("Passwords mismatch.");
-        }
+    public UserWithoutPasswordDTO register(RegisterDTO dto, String siteURL) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new BadRequestException("Email already exists.");
         }
+        if (!dto.getPassword().equals(dto.getConfirmedPassword())) {
+            throw new BadRequestException("Passwords mismatch.");
+        }
+        User user = mapper.map(dto, User.class);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setPassword(encoder.encode(user.getPassword()));
 
-        User u = mapper.map(dto, User.class);
-        u.setCreatedAt(LocalDateTime.now());
-        u.setPassword(encoder.encode(u.getPassword()));
-        userRepository.save(u);
-        return mapper.map(u, UserWithoutPasswordDTO.class);
+        emailService.sendVerificationEmail(user, siteURL);
+        String verificationCode = RandomString.make(64);
+        user.setVerificationCode(verificationCode);
+
+        userRepository.save(user);
+        return mapper.map(user, UserWithoutPasswordDTO.class);
     }
 
     public UserWithoutPasswordDTO getUserInfo(int id) {
@@ -89,7 +97,7 @@ public class UserService extends AbstractService {
     @Transactional
     public FollowDTO follow(int followerId, int followedId) {
         if (followerId == followedId) {
-            throw new BadRequestException("Cannot follow yourself");
+            throw new BadRequestException("Cannot follow yourself.");
         }
         boolean isFollowing = true;
         User follower = getUserById(followerId);
@@ -143,5 +151,27 @@ public class UserService extends AbstractService {
         return followed.stream()
                 .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public String verifyAccount(String code) {
+        Optional<User> optionalUser = userRepository.findByVerificationCode(code);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setIsVerified(true);
+            user.setVerificationCode(null);
+            userRepository.save(user);
+            return "You have been verified successfully";
+        } else {
+            throw new BadRequestException("You are already verified!");
+        }
+    }
+
+    public void deleteNonVerifiedUsers() {
+        LocalDateTime dateTimeThreshold = LocalDateTime.now().minusHours(24);
+        List<User> nonVerifiedUsers = userRepository.findNonVerifiedUsersRegisteredBefore(dateTimeThreshold);
+
+        for (User user : nonVerifiedUsers) {
+            userRepository.delete(user);
+        }
     }
 }

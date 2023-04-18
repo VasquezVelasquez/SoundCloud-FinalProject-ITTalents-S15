@@ -3,9 +3,11 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,8 @@ public class UserController extends AbstractController{
     private UserService userService;
 
     @PostMapping("/users")
-    public UserWithoutPasswordDTO register(@Valid @RequestBody RegisterDTO dto) {
-        return userService.register(dto);
+    public UserWithoutPasswordDTO register(@Valid @RequestBody RegisterDTO dto, HttpServletRequest request) {
+        return userService.register(dto, getRequestSiteURL(request));
     }
 
     @GetMapping("/users/{id}")
@@ -89,6 +91,11 @@ public class UserController extends AbstractController{
     @GetMapping("/users/followed")
     public List<UserWithoutPasswordDTO> getFollowed(HttpSession s) {
         return userService.getFollowed(getLoggedId(s));
+    }
+
+    @GetMapping("/verify")
+    public String verifyAccount(@Param("code") String code){
+        return userService.verifyAccount(code);
     }
 }
 
