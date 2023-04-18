@@ -30,31 +30,25 @@ public class UserController extends AbstractController{
 
     @PostMapping("/users/login")
     public UserWithoutPasswordDTO login(@RequestBody LoginDTO dto, HttpSession s) {
-        if (s.getAttribute("LOGGED_ID") != null && (Boolean)s.getAttribute("LOGGED")) {
+        if (isLogged(s)) {
             throw new BadRequestException("User is already logged in.");
         }
 
         UserWithoutPasswordDTO responseDTO = userService.login(dto);
-
-        s.setAttribute("LOGGED", true);
-        s.setAttribute("LOGGED_ID", responseDTO.getId());
+        s.setAttribute(LOGGED_ID, responseDTO.getId());
         return responseDTO;
     }
 
     @PostMapping("/users/logout")
     public ResponseEntity<String> logout(HttpSession s) {
-        if (s.getAttribute("LOGGED") != null && (Boolean) s.getAttribute("LOGGED")) {
-            s.invalidate();
-            return ResponseEntity.ok("User logged out successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not logged in.");
-        }
+        s.invalidate();
+        return ResponseEntity.ok("User logged out successfully.");
     }
 
     @DeleteMapping("/users")
     public ResponseEntity<String> deleteAccount(@RequestBody PasswordDTO dto, HttpSession s) {
-        if (s.getAttribute("LOGGED_ID") != null && (Boolean) s.getAttribute("LOGGED")) {
-            userService.deleteAccount(dto, (int) s.getAttribute("LOGGED_ID"));
+        if (!isLogged(s)) {
+            userService.deleteAccount(dto, (int) s.getAttribute(LOGGED_ID));
             s.invalidate();
             return ResponseEntity.ok("Account deleted successfully.");
         } else {
@@ -64,10 +58,9 @@ public class UserController extends AbstractController{
 
     @PutMapping("/users")
     public UserWithoutPasswordDTO edit(@Valid @RequestBody EditDTO dto, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
+        if (!isLogged(s)) {
             throw new BadRequestException("User is not logged in.");
         }
-
         return userService.edit(dto, getLoggedId(s));
     }
 
@@ -79,10 +72,6 @@ public class UserController extends AbstractController{
 
     @PostMapping("/users/password")
     public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordDTO dto, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
-
         userService.changePassword(dto, getLoggedId(s));
         return ResponseEntity.ok("Password changed successful.");
     }
@@ -101,7 +90,5 @@ public class UserController extends AbstractController{
     public List<UserWithoutPasswordDTO> getFollowed(HttpSession s) {
         return userService.getFollowed(getLoggedId(s));
     }
-
-
 }
 

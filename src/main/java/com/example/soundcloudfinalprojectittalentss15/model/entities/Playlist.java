@@ -19,6 +19,7 @@ public class Playlist {
     private int id;
 
     @Column
+
     private String title;
     @ManyToOne
     @JoinColumn(name = "owner_id")

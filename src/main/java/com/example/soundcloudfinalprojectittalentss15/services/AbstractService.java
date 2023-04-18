@@ -5,6 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.*;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
@@ -41,6 +42,10 @@ public abstract class AbstractService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
+    protected User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UnauthorizedException("Wrong credentials."));
+    }
+
     protected Track getTrackById(int id){
         return trackRepository.findById(id).orElseThrow(() -> new NotFoundException("Track not found"));
     }
@@ -51,6 +56,12 @@ public abstract class AbstractService {
 
     protected Comment getCommentById(int id) {
         return commentRepository.findById(id).orElseThrow(() -> new NotFoundException("Comment not found"));
+    }
+
+    protected void checkOwnership(int ownerId, int userId) {
+        if (ownerId != userId) {
+            throw new UnauthorizedException("Unauthorized action");
+        }
     }
 
     @SneakyThrows

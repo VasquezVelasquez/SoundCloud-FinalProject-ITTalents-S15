@@ -13,6 +13,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadReques
 import com.example.soundcloudfinalprojectittalentss15.services.PlaylistService;
 import com.example.soundcloudfinalprojectittalentss15.services.TagService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class PlaylistController extends AbstractController{
     private TagService tagService;
 
     @PostMapping("/playlists")
-    public PlaylistDTO create(@RequestBody CreatePlaylistDTO dto, HttpSession s) {
+    public PlaylistDTO create(@Valid @RequestBody CreatePlaylistDTO dto, HttpSession s) {
         return playlistService.create(dto, getLoggedId(s));
     }
 
@@ -51,9 +52,7 @@ public class PlaylistController extends AbstractController{
 
     @GetMapping("/users/{id}/playlists")
     public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable int id, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
+        checkLogged(s);
         return playlistService.getPlaylistsByUserId(id);
     }
 
@@ -65,14 +64,11 @@ public class PlaylistController extends AbstractController{
 
     @GetMapping("/playlists")
     public List<PlaylistDTO> getPlaylistsByName(@RequestParam(required = false) String name, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
-        if (name == null) {
-            return null;
-        } else {
+        checkLogged(s);
+        if (name != null) {
             return playlistService.getPlaylistsByName(name);
         }
+        return null;
     }
 
     @PostMapping("playlists/{id}/like")
@@ -88,11 +84,20 @@ public class PlaylistController extends AbstractController{
     }
 
 
+    //TODO add validation on tagsDTO
+    @PostMapping("playlists/{playlistId}/tags")
+    public PlaylistDTO addTagsToPlaylist(@PathVariable int playlistId, @RequestBody List<TagDTO> tagDTOs, HttpSession s) {
+        int userId = getLoggedId(s);
+        TagPlaylistRequestDTO request = new TagPlaylistRequestDTO();
+        request.setPlaylistId(playlistId);
+        request.setTags(tagDTOs);
+        return tagService.addTagsToPlaylist(request, userId);
+    }
+
 
     @PostMapping("playlists/search")
     public Page<PlaylistDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {
         return playlistService.searchPlaylistsByTags(request);
-
     }
 
 }

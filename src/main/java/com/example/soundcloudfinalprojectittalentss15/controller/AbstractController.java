@@ -18,6 +18,8 @@ import java.util.Map;
 
 public abstract class AbstractController {
 
+    public static final String LOGGED_ID = "LOGGED_ID";
+
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleBadRequest(Exception e){
@@ -65,14 +67,28 @@ public abstract class AbstractController {
     }
 
     protected int getLoggedId(HttpSession s){
-        if(s.getAttribute("LOGGED_ID") == null){
+        if(s.getAttribute(LOGGED_ID) == null){
             throw new UnauthorizedException("You have to login first");
         }
-        return (int) s.getAttribute("LOGGED_ID");
+        return (int) s.getAttribute(LOGGED_ID);
     }
 
+    protected boolean isLogged(HttpSession s) {
+        return s.getAttribute(LOGGED_ID) != null;
+    }
 
+    protected void checkLogged(HttpSession s) {
+        if (!isLogged(s)) {
+            throw new BadRequestException("User is not logged in.");
+        }
+    }
 
+    public boolean isValidPictureFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        boolean isValidImage = contentType != null &&
+                (contentType.equalsIgnoreCase("image/jpeg") || contentType.equalsIgnoreCase("image/png"));
+        return isValidImage;
+    }
 
 
     
