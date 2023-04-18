@@ -12,6 +12,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadReques
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import com.example.soundcloudfinalprojectittalentss15.model.repositories.PlaylistRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlaylistService extends AbstractService{
 
-
+    @Transactional
     public PlaylistDTO likePlaylist(int id, int userId) {
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
         if (optionalPlaylist.isEmpty()) {
@@ -45,6 +46,7 @@ public class PlaylistService extends AbstractService{
         return mapper.map(p, PlaylistDTO.class);
     }
 
+    @Transactional
     public PlaylistDTO create(CreatePlaylistDTO dto, int loggedId) {
         int trackId = dto.getTrackId();
         Optional<Track> optTrack = trackRepository.getById(trackId);
@@ -71,7 +73,7 @@ public class PlaylistService extends AbstractService{
 
         return mapper.map(playlist, PlaylistDTO.class);
     }
-
+    @Transactional
     public PlaylistDTO addTrack(int playlistId, int trackId, int loggedId) {
         Optional<Playlist> opt = playlistRepository.findById(playlistId);
         if (opt.isEmpty()) {
@@ -96,6 +98,7 @@ public class PlaylistService extends AbstractService{
         return mapper.map(p, PlaylistDTO.class);
     }
 
+    @Transactional
     public ResponseEntity<String> deletePlaylist(int playlistId, int loggedId) {
         Optional<Playlist> opt = playlistRepository.getPlaylistsById(playlistId);
 
@@ -124,7 +127,7 @@ public class PlaylistService extends AbstractService{
                 .collect(Collectors.toList());
     }
 
-
+    @Transactional
     public PlaylistDTO editInfo(int playlistId, EditPlaylistInfoDTO dto, int loggedId) {
         Optional<Playlist> opt = playlistRepository.getPlaylistsById(playlistId);
         if (opt.isEmpty()) {
@@ -153,6 +156,7 @@ public class PlaylistService extends AbstractService{
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public PlaylistDTO removeTrackById(int playlistId, int trackId, int loggedId) {
         Optional<Playlist> opt = playlistRepository.getPlaylistsById(playlistId);
         if (opt.isEmpty()) {

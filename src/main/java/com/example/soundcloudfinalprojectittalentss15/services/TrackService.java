@@ -9,6 +9,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +27,9 @@ import java.util.stream.Collectors;
 @Service
 
 public class TrackService extends AbstractService{
+
     @SneakyThrows
+    @Transactional
     public TrackInfoDTO upload(MultipartFile trackFile, String title, String description, boolean isPublic, int loggedId) {
         if(!isValidAudioFile(trackFile)) {
             throw new BadRequestException("File type not accepted, you should select a mp3 file!");
@@ -46,7 +49,7 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
-
+    @Transactional
     public TrackInfoDTO editTrack(int trackId, TrackEditInfoDTO trackEditDTO, int loggedId) {
         Optional<Track> opt = trackRepository.findById(trackId);
         if(opt.isEmpty()) {
@@ -67,6 +70,7 @@ public class TrackService extends AbstractService{
 
     }
 
+    @Transactional
     public TrackInfoDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         User u = getUserById(loggedId);
@@ -80,6 +84,7 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
+    @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         if(track.getOwner().getId() != loggedId) {

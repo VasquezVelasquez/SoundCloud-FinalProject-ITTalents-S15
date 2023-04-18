@@ -6,6 +6,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ public class CommentService extends AbstractService{
         return mapper.map(comment, CommentInfoDTO.class);
     }
 
-
+    @Transactional
     public CommentInfoDTO createComment(int trackId, String content, int userId) {
         Track track = getTrackById(trackId);
         User user = getUserById(userId);
@@ -47,6 +48,7 @@ public class CommentService extends AbstractService{
         return comments.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    @Transactional
     public CommentInfoDTO createReply(int trackId, int commentId, String content, int userId) {
         Track track = getTrackById(trackId);
         User user = getUserById(userId);
@@ -61,7 +63,7 @@ public class CommentService extends AbstractService{
         return mapper.map(reply, CommentInfoDTO.class);
     }
 
-
+    @Transactional
     public CommentInfoDTO deleteComment(int trackId, int commentId, int userId) {
         Track track = getTrackById(trackId);
         Comment comment = getCommentById(commentId);

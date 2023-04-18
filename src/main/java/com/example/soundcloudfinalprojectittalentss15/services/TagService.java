@@ -10,6 +10,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.Tag;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Service
 public class TagService extends AbstractService {
 
-
+    @Transactional
     public TrackInfoDTO addTagsToTrack(TagTrackRequestDTO request, int userId) {
         Track track = getTrackById(request.getTrackId());
         if(track.getOwner().getId() != userId) {
@@ -40,6 +41,7 @@ public class TagService extends AbstractService {
         return mapper.map(track, TrackInfoDTO.class);
     }
 
+    @Transactional
     public PlaylistDTO addTagsToPlaylist(TagPlaylistRequestDTO request, int userId) {
         Playlist playlist = getPlaylistById(request.getPlaylistId());
         if(playlist.getOwner().getId() != userId) {
