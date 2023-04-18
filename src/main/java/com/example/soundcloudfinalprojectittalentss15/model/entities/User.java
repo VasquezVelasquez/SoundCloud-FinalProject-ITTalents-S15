@@ -49,7 +49,7 @@ public class User {
     private Set<Comment> comments;
     @ManyToMany
     @JoinTable(
-            name = "users_like_tracks",
+            name = "users_react_to_tracks",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "track_id"))
     private Set<Track> likedTracks;

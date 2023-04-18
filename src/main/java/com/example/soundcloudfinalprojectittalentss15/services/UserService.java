@@ -167,7 +167,7 @@ public class UserService extends AbstractService {
     }
 
     public void deleteNonVerifiedUsers() {
-        LocalDateTime dateTimeThreshold = LocalDateTime.now().minusHours(24);
+        LocalDateTime dateTimeThreshold = LocalDateTime.now().minusMinutes(1);
         List<User> nonVerifiedUsers = userRepository.findNonVerifiedUsersRegisteredBefore(dateTimeThreshold);
 
         for (User user : nonVerifiedUsers) {
