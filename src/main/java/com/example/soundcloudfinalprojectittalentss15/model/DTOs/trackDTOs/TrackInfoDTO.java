@@ -3,6 +3,7 @@ package com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,11 +32,17 @@ public class TrackService extends AbstractService{
     @Transactional
 
     public TrackInfoDTO upload (MultipartFile trackFile, String title, String description, int loggedId) {
+        if(title.length() >= 255) {
+            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+        }
+        if(description.length() >= 500) {
+            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+        }
         if(!isValidAudioFile(trackFile)) {
             throw new BadRequestException("File type not accepted, you should select a mp3 file!");
         }
         String name = createFileName(trackFile);
-        String url = createFile(trackFile, name, "tracks");
+        String url = createFile(trackFile, name, TRACKS_DIRECTORY);
 
         Track track = new Track();
         track.setTitle(title);
@@ -52,15 +57,10 @@ public class TrackService extends AbstractService{
 
     @Transactional
     public TrackInfoDTO editTrack(int trackId, TrackEditInfoDTO trackEditDTO, int loggedId) {
-        Optional<Track> opt = trackRepository.findById(trackId);
-        if(opt.isEmpty()) {
-            throw new BadRequestException("Track doesn't exist.");
-        }
-        Track track = opt.get();
+        Track track = getTrackById(trackId);
         if(track.getOwner().getId() != loggedId) {
             throw new UnauthorizedException("Not authorized action! ");
         }
-
         track.setDescription(trackEditDTO.getDescription());
         track.setTitle(trackEditDTO.getTitle());
         trackRepository.save(track);
@@ -79,7 +79,6 @@ public class TrackService extends AbstractService{
             u.getLikedTracks().add(track);
         }
         userRepository.save(u);
-
         return mapper.map(track, TrackInfoDTO.class);
     }
 
@@ -103,7 +102,7 @@ public class TrackService extends AbstractService{
 
     @Transactional
     public File download(String url) {
-        File dir = new File("tracks");
+        File dir = new File(TRACKS_DIRECTORY);
         File track = new File(dir, url);
         if(track.exists()) {
             Track file = trackRepository.findByTrackUrl(dir + File.separator + url);

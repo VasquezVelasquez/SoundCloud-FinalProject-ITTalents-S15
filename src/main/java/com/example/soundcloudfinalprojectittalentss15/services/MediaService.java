@@ -6,6 +6,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
@@ -81,6 +82,9 @@ public class MediaService extends AbstractService{
     }
 
     public TrackInfoDTO uploadTrackCoverPicture(MultipartFile file, int trackId, int loggedId) {
+        if(!isValidPictureFile(file)) {
+            throw new BadRequestException("File type not accepted!");
+        }
         Track track = getTrackById(trackId);
         if(track.getOwner().getId() != loggedId) {
             throw new UnauthorizedException("Not authorized action!");

@@ -46,9 +46,7 @@ public class MediaController extends AbstractController{
 
     @PostMapping("/tracks/{trackId}")
     public TrackInfoDTO uploadTrackCoverPicture(@RequestParam("file") MultipartFile file, @PathVariable int trackId, HttpSession s) {
-        if(!isValidPictureFile(file)) {
-            throw new BadRequestException("File type not accepted!");
-        }
+
         return mediaService.uploadTrackCoverPicture(file, trackId, getLoggedId(s));
     }
 

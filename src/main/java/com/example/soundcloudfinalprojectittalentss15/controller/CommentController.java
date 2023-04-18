@@ -25,9 +25,6 @@ public class CommentController extends AbstractController{
     @PostMapping("/track/{trackId}/comments")
     public CommentInfoDTO createComment(@PathVariable int trackId, @RequestBody String content, HttpSession s) {
         int userId = getLoggedId(s);
-        if(content.length() >= 500) {
-            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
-        }
         return commentService.createComment(trackId, content, userId);
     }
 
@@ -42,9 +39,6 @@ public class CommentController extends AbstractController{
     @PostMapping("/track/{trackId}/comments/{commentId}")
     public CommentInfoDTO replyToComment(@PathVariable int trackId, @PathVariable int commentId, @RequestBody String content,  HttpSession s) {
         int userId = getLoggedId(s);
-        if(content.length() >= 500) {
-            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
-        }
         return commentService.createReply(trackId, commentId, content, userId);
     }
 

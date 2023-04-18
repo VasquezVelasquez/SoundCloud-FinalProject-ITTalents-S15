@@ -26,13 +26,12 @@ public class CommentService extends AbstractService{
 
     @Transactional
     public CommentInfoDTO createComment(int trackId, String content, int userId) {
+        if(content.length() >= 500) {
+            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+        }
         Track track = getTrackById(trackId);
         User user = getUserById(userId);
-        Comment comment = new Comment();
-        comment.setContent(content);
-        comment.setUser(user);
-        comment.setTrack(track);
-        comment.setPostedAt(LocalDateTime.now());
+        Comment comment = fillInCommentData(content, user, track);
         commentRepository.save(comment);
         return mapper.map(comment, CommentInfoDTO.class);
     }
@@ -47,14 +46,13 @@ public class CommentService extends AbstractService{
 
     @Transactional
     public CommentInfoDTO createReply(int trackId, int commentId, String content, int userId) {
+        if(content.length() >= 500) {
+            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+        }
         Track track = getTrackById(trackId);
         User user = getUserById(userId);
         Comment comment = getCommentById(commentId);
-        Comment reply = new Comment();
-        reply.setContent(content);
-        reply.setUser(user);
-        reply.setTrack(track);
-        reply.setPostedAt(LocalDateTime.now());
+        Comment reply = fillInCommentData(content, user, track);
         reply.setParentComment(comment);
         commentRepository.save(reply);
         return mapper.map(reply, CommentInfoDTO.class);
@@ -70,9 +68,18 @@ public class CommentService extends AbstractService{
         if((track.getOwner().getId() != userId) && (comment.getUser().getId() != userId)) {
             throw new UnauthorizedException("User cannot access this operation! ");
         }
-
         CommentInfoDTO commentInfoDTO = mapper.map(comment, CommentInfoDTO.class);
         commentRepository.delete(comment);
         return commentInfoDTO;
+    }
+
+    public Comment fillInCommentData(String content, User user, Track track) {
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setUser(user);
+        comment.setTrack(track);
+        comment.setPostedAt(LocalDateTime.now());
+        return comment;
+
     }
 }

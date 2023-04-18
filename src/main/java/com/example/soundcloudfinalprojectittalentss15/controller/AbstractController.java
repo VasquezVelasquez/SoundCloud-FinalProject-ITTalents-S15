@@ -73,13 +73,7 @@ public abstract class AbstractController {
 
 
 
-    public boolean isValidPictureFile(MultipartFile file) {
-        String contentType = file.getContentType();
-        boolean isValidImage = contentType != null &&
-                (contentType.equalsIgnoreCase("image/jpeg") || contentType.equalsIgnoreCase("image/png"));
 
-        return isValidImage;
-    }
 
     
 

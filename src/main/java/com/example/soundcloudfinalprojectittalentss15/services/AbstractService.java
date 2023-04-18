@@ -20,6 +20,9 @@ import java.util.UUID;
 @Service
 public abstract class AbstractService {
 
+    public static final String PICTURES_DIRECTORY = "pictures";
+    public static final String TRACKS_DIRECTORY = "tracks";
+
     @Autowired
     protected UserRepository userRepository;
     @Autowired
@@ -58,8 +61,7 @@ public abstract class AbstractService {
         }
         File f = new File(dir, name);
         Files.copy(file.getInputStream() , f.toPath());
-        String url = dir.getName() + File.separator + f.getName();
-        return url;
+        return dir.getName() + File.separator + f.getName();
 
     }
 
@@ -72,11 +74,11 @@ public abstract class AbstractService {
         String contentType = file.getContentType();
         return contentType != null && contentType.equalsIgnoreCase("audio/mpeg");
     }
+    public boolean isValidPictureFile(MultipartFile file) {
+        String contentType = file.getContentType();
+        boolean isValidImage = contentType != null &&
+                (contentType.equalsIgnoreCase("image/jpeg") || contentType.equalsIgnoreCase("image/png"));
+        return isValidImage;
+    }
 
-
-
-
-//    protected User getUserById(int id){
-//        return userRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException("User not found"));
-//    }
 }

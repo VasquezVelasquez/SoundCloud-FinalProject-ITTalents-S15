@@ -8,11 +8,9 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Tag;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
-
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.util.Set;
 
 @Service
@@ -64,4 +62,5 @@ public class TagService extends AbstractService {
         playlistRepository.save(playlist);
         return mapper.map(playlist, PlaylistDTO.class);
     }
+
 }
