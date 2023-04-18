@@ -24,7 +24,6 @@ public class CommentService extends AbstractService{
                 .collect(Collectors.toList());
     }
 
-
     @Transactional
     public CommentInfoDTO createComment(int trackId, String content, int userId) {
         Track track = getTrackById(trackId);
@@ -45,6 +44,7 @@ public class CommentService extends AbstractService{
         return comments.stream().map(comment -> mapper.map(comment, CommentInfoDTO.class))
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public CommentInfoDTO createReply(int trackId, int commentId, String content, int userId) {
         Track track = getTrackById(trackId);

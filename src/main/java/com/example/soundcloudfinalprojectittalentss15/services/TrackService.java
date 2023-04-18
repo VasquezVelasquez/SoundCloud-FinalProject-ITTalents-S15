@@ -2,8 +2,9 @@ package com.example.soundcloudfinalprojectittalentss15.services;
 
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
+
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
@@ -27,9 +28,11 @@ import java.util.stream.Collectors;
 @Service
 
 public class TrackService extends AbstractService{
+
     @SneakyThrows
     @Transactional
-    public TrackInfoDTO upload(MultipartFile trackFile, String title, String description, int loggedId) {
+
+    public TrackInfoDTO upload (MultipartFile trackFile, String title, String description, int loggedId) {
         if(!isValidAudioFile(trackFile)) {
             throw new BadRequestException("File type not accepted, you should select a mp3 file!");
         }
@@ -65,6 +68,7 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
 
     }
+
     @Transactional
     public TrackInfoDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
@@ -78,6 +82,7 @@ public class TrackService extends AbstractService{
 
         return mapper.map(track, TrackInfoDTO.class);
     }
+
     @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);

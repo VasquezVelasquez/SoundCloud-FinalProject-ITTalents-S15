@@ -46,7 +46,7 @@ public class TrackController extends AbstractController {
     }
 
     @PutMapping("/tracks/{trackId}")
-    public TrackInfoDTO editTrack(@PathVariable int trackId,@Valid @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
+    public TrackInfoDTO editTrack(@PathVariable int trackId, @Valid @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
         int userId = getLoggedId(s);
         return trackService.editTrack(trackId, trackEditDTO, userId);
     }

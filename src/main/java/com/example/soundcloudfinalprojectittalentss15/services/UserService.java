@@ -4,6 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserService extends AbstractService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Transactional
     public UserWithoutPasswordDTO register(RegisterDTO dto) {
 
         if (!dto.getPassword().equals(dto.getConfirmedPassword())) {
@@ -62,6 +64,7 @@ public class UserService extends AbstractService {
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 
+    @Transactional
     public void deleteAccount(PasswordDTO dto, int loggedId) {
         Optional<User> optionalUser = userRepository.findById(loggedId);
 
@@ -76,6 +79,7 @@ public class UserService extends AbstractService {
         userRepository.deleteById(loggedId);
     }
 
+    @Transactional
     public UserWithoutPasswordDTO edit(EditDTO dto, int userId) {
         Optional<User> opt = userRepository.findById(userId);
         if(opt.isEmpty()) {
@@ -95,7 +99,7 @@ public class UserService extends AbstractService {
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 
-
+    @Transactional
     public void changePassword(ChangePasswordDTO dto, int loggedId) {
         Optional<User> opt = userRepository.findById(loggedId);
 
@@ -117,6 +121,7 @@ public class UserService extends AbstractService {
         userRepository.save(u);
     }
 
+    @Transactional
     public FollowDTO follow(int followerId, int followedId) {
         if (followerId == followedId) {
             throw new BadRequestException("Cannot follow yourself");
