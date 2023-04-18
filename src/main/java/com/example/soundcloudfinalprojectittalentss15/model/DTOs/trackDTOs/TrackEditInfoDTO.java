@@ -14,6 +14,5 @@ public class TrackEditInfoDTO {
     private String title;
     @Size(min = 4, max = 500, message = "Display name must be between 4 and 500 characters")
     private String description;
-    private boolean isPublic;
 
 }

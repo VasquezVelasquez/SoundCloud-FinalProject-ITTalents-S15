@@ -34,7 +34,7 @@ public class TrackController extends AbstractController {
 
     @PostMapping("/tracks")
     public TrackInfoDTO upload(@RequestParam("track")MultipartFile trackFile, @RequestParam String title,
-                              @RequestParam String description, @RequestParam boolean isPublic,  HttpSession s) {
+                              @RequestParam String description,  HttpSession s) {
         if(title.length() >= 255) {
             throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
         }
@@ -42,7 +42,7 @@ public class TrackController extends AbstractController {
             throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
         }
 
-        return trackService.upload(trackFile, title, description, isPublic,  getLoggedId(s));
+        return trackService.upload(trackFile, title, description,  getLoggedId(s));
     }
 
     @PutMapping("/tracks/{trackId}")
@@ -89,19 +89,12 @@ public class TrackController extends AbstractController {
     }
 
     @GetMapping("/tracks")
-    public Page<TrackInfoDTO> getAllPublicTracksWithPagination(@RequestParam(name = "page", defaultValue = "0") int pageNumber) {
-        return trackService.getAllPublicTracksWithPagination(pageNumber);
+    public Page<TrackInfoDTO> getAllTracksWithPagination(@RequestParam(name = "page", defaultValue = "0") int pageNumber) {
+        return trackService.getAllTracksWithPagination(pageNumber);
 
     }
 
-    @PostMapping("tracks/{trackId}/tags")
-    public TrackInfoDTO addTagsToTrack(@PathVariable int trackId, @RequestBody List<TagDTO> tagDTOs, HttpSession s) {
-        int userId = getLoggedId(s);
-        TagTrackRequestDTO request = new TagTrackRequestDTO();
-        request.setTrackId(trackId);
-        request.setTags(tagDTOs);
-        return tagService.addTagsToTrack(request, userId);
-    }
+
 
     @PostMapping("tracks/search")
     public Page<TrackInfoDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {

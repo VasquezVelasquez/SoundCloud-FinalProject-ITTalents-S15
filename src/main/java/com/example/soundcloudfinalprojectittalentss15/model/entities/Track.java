@@ -26,8 +26,6 @@ public class Track {
     @Column
     private String coverPictureUrl;
     @Column
-    private boolean isPublic;
-    @Column
     private String description;
     @OneToMany(mappedBy = "track")
     private Set<Comment> comments;

@@ -21,6 +21,7 @@ public abstract class AbstractController {
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleBadRequest(Exception e){
+
         return generateErrorDTO(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

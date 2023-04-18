@@ -9,6 +9,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 
 public class TrackService extends AbstractService{
     @SneakyThrows
-    public TrackInfoDTO upload(MultipartFile trackFile, String title, String description, boolean isPublic, int loggedId) {
+    @Transactional
+    public TrackInfoDTO upload(MultipartFile trackFile, String title, String description, int loggedId) {
         if(!isValidAudioFile(trackFile)) {
             throw new BadRequestException("File type not accepted, you should select a mp3 file!");
         }
@@ -38,7 +40,6 @@ public class TrackService extends AbstractService{
         track.setTitle(title);
         track.setUploadedAt(LocalDateTime.now());
         track.setTrackUrl(url);
-        track.setPublic(isPublic);
         track.setDescription(description);
         track.setOwner(getUserById(loggedId));
         track.setPlays(1);
@@ -46,7 +47,7 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
-
+    @Transactional
     public TrackInfoDTO editTrack(int trackId, TrackEditInfoDTO trackEditDTO, int loggedId) {
         Optional<Track> opt = trackRepository.findById(trackId);
         if(opt.isEmpty()) {
@@ -58,15 +59,13 @@ public class TrackService extends AbstractService{
         }
 
         track.setDescription(trackEditDTO.getDescription());
-        track.setPublic(trackEditDTO.isPublic());
         track.setTitle(trackEditDTO.getTitle());
-
         trackRepository.save(track);
 
         return mapper.map(track, TrackInfoDTO.class);
 
     }
-
+    @Transactional
     public TrackInfoDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         User u = getUserById(loggedId);
@@ -79,7 +78,7 @@ public class TrackService extends AbstractService{
 
         return mapper.map(track, TrackInfoDTO.class);
     }
-
+    @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         if(track.getOwner().getId() != loggedId) {
@@ -96,6 +95,8 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
+
+    @Transactional
     public File download(String url) {
         File dir = new File("tracks");
         File track = new File(dir, url);
@@ -126,13 +127,14 @@ public class TrackService extends AbstractService{
                 .collect(Collectors.toList());
     }
 
-    public Page<TrackInfoDTO> getAllPublicTracksWithPagination(int pageNumber) {
+    public Page<TrackInfoDTO> getAllTracksWithPagination(int pageNumber) {
         int pageSize = 10;
         org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "uploadedAt"));
-        Page<Track> tracksPage = trackRepository.findByIsPublicTrue(pageable);
+        Page<Track> tracksPage = trackRepository.findAll(pageable);
 
         return tracksPage.map(track -> mapper.map(track, TrackInfoDTO.class));
     }
+
 
     public Page<TrackInfoDTO> searchTracksByTags(TagSearchDTO request) {
         int pageSize = 10;

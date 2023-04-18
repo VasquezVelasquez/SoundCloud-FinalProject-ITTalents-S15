@@ -18,7 +18,6 @@ public class TrackInfoDTO {
     private String title;
     private LocalDateTime uploadedAt;
     private String description;
-    private boolean isPublic;
     private String trackUrl;
     private UserWithoutPasswordDTO owner;
     private int plays;

@@ -87,14 +87,7 @@ public class PlaylistController extends AbstractController{
         return playlistService.getLikedPlaylists(id);
     }
 
-    @PostMapping("playlists/{playlistId}/tags")
-    public PlaylistDTO addTagsToPlaylist(@PathVariable int playlistId, @RequestBody List<TagDTO> tagDTOs, HttpSession s) {
-        int userId = getLoggedId(s);
-        TagPlaylistRequestDTO request = new TagPlaylistRequestDTO();
-        request.setPlaylistId(playlistId);
-        request.setTags(tagDTOs);
-        return tagService.addTagsToPlaylist(request, userId);
-    }
+
 
     @PostMapping("playlists/search")
     public Page<PlaylistDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {
