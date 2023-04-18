@@ -21,4 +21,10 @@ public class EmailSenderService {
         mailSender.send(message);
         System.out.println("Mail sent successfully...");
     }
+
+    public void sendVerificationMail(String toEmail, String subject, String verificationCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("testsoundclouds15@gmail.com");
+
+    }
 }
