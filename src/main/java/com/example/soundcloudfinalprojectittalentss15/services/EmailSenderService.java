@@ -55,12 +55,12 @@ public class EmailSenderService {
         }).start();
     }
 
-    public void sendResetPasswordEmail(User user) {
+    public void sendResetPasswordEmail(User user, String siteURL) {
         String fromAddress = "vasilmomchiltalents@gmail.com";
         String subject = "Reset Password";
-        String siteURL = ""; // Configure your site URL here
-        String resetURL = siteURL + "/reset-password?code=" + user.getResetCode();
-        String content = "To reset your password, please click the link below:\n" + resetURL;
+        String resetURL = siteURL + "/reset-password";
+        String content = "Your reset password code is : " + user.getResetCode() + "\n" +
+                "To reset your password, please click the link below:\n" + resetURL;
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

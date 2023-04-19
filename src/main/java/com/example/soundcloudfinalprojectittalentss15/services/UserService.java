@@ -4,11 +4,12 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,35 +52,44 @@ public class UserService extends AbstractService {
         return mapper.map(user, UserWithoutPasswordDTO.class);
     }
 
-    @Transactional
-    public UserWithoutPasswordDTO login(LoginDTO dto) {
+    public UserWithoutPasswordDTO login(LoginDTO dto, String siteURL) {
         User user = getUserByEmail(dto.getEmail());
         if (!encoder.matches(dto.getPassword(), user.getPassword())) {
-//            int attempts = user.getAttempts() + 1;
-            user.setAttempts(user.getAttempts() + 1);
-            userRepository.save(user);
-
-            if (user.getAttempts() >= 3) {
-                user.setBlocked(true);
-                String resetCode = RandomString.make(64);
-                user.setResetCode(resetCode);
-                userRepository.save(user);
-                emailService.sendResetPasswordEmail(user);
-                throw new UnauthorizedException("User account is blocked. A reset password email has been sent.");
-            } else {
-                throw new UnauthorizedException("Wrong credentials.");
-            }
+            handleFailedLogin(user, siteURL);
+            throw new UnauthorizedException("Wrong credentials.");
         }
 
         if (user.isBlocked()) {
             throw new UnauthorizedException("User account is blocked. Please reset your password.");
         }
 
+        return successfulLogin(user);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void handleFailedLogin(User user, String siteURL) {
+        user.setAttempts(user.getAttempts() + 1);
+
+        if (user.getAttempts() >= 3) {
+            user.setBlocked(true);
+            String resetCode = RandomString.make(64);
+            user.setResetCode(resetCode);
+            userRepository.save(user);
+            emailService.sendResetPasswordEmail(user, siteURL);
+            throw new UnauthorizedException("User account is blocked. A reset password email has been sent.");
+        }
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    UserWithoutPasswordDTO successfulLogin(User user) {
         user.setLastLogin(LocalDateTime.now());
         user.setAttempts(0);
         userRepository.save(user);
         return mapper.map(user, UserWithoutPasswordDTO.class);
     }
+
 
     @Transactional
     public void deleteAccount(PasswordDTO dto, int userId) {
