@@ -28,32 +28,32 @@ import java.util.stream.Collectors;
 
 public class TrackService extends AbstractService{
 
-    @SneakyThrows
-    @Transactional
+//    @SneakyThrows
+//    @Transactional
 
-    public TrackInfoDTO upload (MultipartFile trackFile, String title, String description, int loggedId) {
-        if(title.length() >= 255) {
-            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
-        }
-        if(description.length() >= 500) {
-            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
-        }
-        if(!isValidAudioFile(trackFile)) {
-            throw new BadRequestException("File type not accepted, you should select a mp3 file!");
-        }
-        String name = createFileName(trackFile);
-        String url = createFile(trackFile, name, TRACKS_DIRECTORY);
-
-        Track track = new Track();
-        track.setTitle(title);
-        track.setUploadedAt(LocalDateTime.now());
-        track.setTrackUrl(url);
-        track.setDescription(description);
-        track.setOwner(getUserById(loggedId));
-        track.setPlays(1);
-        trackRepository.save(track);
-        return mapper.map(track, TrackInfoDTO.class);
-    }
+//    public TrackInfoDTO upload (MultipartFile trackFile, String title, String description, int loggedId) {
+//        if(title.length() >= 255) {
+//            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+//        }
+//        if(description.length() >= 500) {
+//            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
+//        }
+//        if(!isValidAudioFile(trackFile)) {
+//            throw new BadRequestException("File type not accepted, you should select a mp3 file!");
+//        }
+//        String name = createFileName(trackFile);
+//        String url = createFile(trackFile, name, TRACKS_DIRECTORY);
+//
+//        Track track = new Track();
+//        track.setTitle(title);
+//        track.setUploadedAt(LocalDateTime.now());
+//        track.setTrackUrl(url);
+//        track.setDescription(description);
+//        track.setOwner(getUserById(loggedId));
+//        track.setPlays(1);
+//        trackRepository.save(track);
+//        return mapper.map(track, TrackInfoDTO.class);
+//    }
 
     @Transactional
     public TrackInfoDTO editTrack(int trackId, TrackEditInfoDTO trackEditDTO, int loggedId) {
@@ -82,6 +82,7 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
+<<<<<<< Updated upstream
     @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
@@ -93,12 +94,15 @@ public class TrackService extends AbstractService{
         return trackInfoDTO;
     }
 
+=======
+>>>>>>> Stashed changes
     public TrackInfoDTO showTrackById(int id) {
         Track track  = getTrackById(id);
         return mapper.map(track, TrackInfoDTO.class);
     }
 
 
+<<<<<<< Updated upstream
     @Transactional
     public File download(String url) {
         File dir = new File(TRACKS_DIRECTORY);
@@ -112,6 +116,8 @@ public class TrackService extends AbstractService{
         throw new NotFoundException("Track not found");
     }
 
+=======
+>>>>>>> Stashed changes
     public List<TrackInfoDTO> getAllTracksByUser(int userId) {
         User user = getUserById(userId);
         List<Track> tracks = trackRepository.findAllByOwner(user);

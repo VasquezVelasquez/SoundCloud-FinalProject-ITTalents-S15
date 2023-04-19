@@ -1,7 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.CommentInfoDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.entities.Comment;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.CommentService;
 import jakarta.servlet.http.HttpSession;

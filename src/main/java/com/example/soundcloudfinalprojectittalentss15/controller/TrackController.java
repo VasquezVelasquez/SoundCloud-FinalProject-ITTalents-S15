@@ -1,24 +1,14 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagTrackRequestDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
-import com.example.soundcloudfinalprojectittalentss15.services.TagService;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.nio.file.Files;
 import java.util.List;
 
 
@@ -28,15 +18,6 @@ public class TrackController extends AbstractController {
     @Autowired
     private TrackService trackService;
 
-    @Autowired
-    private TagService tagService;
-
-
-    @PostMapping("/tracks")
-    public TrackInfoDTO upload(@RequestParam("track")MultipartFile trackFile, @RequestParam String title,
-                              @RequestParam String description,  HttpSession s) {
-        return trackService.upload(trackFile, title, description,  getLoggedId(s));
-    }
 
     @PutMapping("/tracks/{trackId}")
     public TrackInfoDTO editTrack(@PathVariable int trackId, @Valid @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
@@ -51,24 +32,13 @@ public class TrackController extends AbstractController {
 
     }
 
-    @DeleteMapping("tracks/{id}")
-    public TrackInfoDTO deleteTrack(@PathVariable int id, HttpSession s) {
-        int userId = getLoggedId(s);
-        return trackService.deleteTrack(id, userId);
 
-    }
 
     @GetMapping("tracks/{id}")
     public TrackInfoDTO getTrackById(@PathVariable int id) {
         return trackService.showTrackById(id);
     }
 
-    @SneakyThrows
-    @GetMapping("tracks/{url}/play")
-    public void playTrack(@PathVariable("url") String url, HttpServletResponse response) {
-        File track = trackService.download(url);
-        Files.copy(track.toPath(), response.getOutputStream());
-    }
 
     @GetMapping("/users/{userId}/tracks")
     public List<TrackInfoDTO> getAllTracksByUser(@PathVariable int userId) {

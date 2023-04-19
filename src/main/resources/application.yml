@@ -1,0 +1,28 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAT56GGR2ICXU72ZX4
+      secret-key: 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
+      region:
+        static: eu-central-1
+        auto: false
+
+application :
+  bucket:
+    name: soundcloudfinalprojectseason15
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50
+      max-request-size: 100
+
+server:
+  port: 8888
+
+logging:
+  level:
+    com:
+      amazonaws:
+        request: DEBUG

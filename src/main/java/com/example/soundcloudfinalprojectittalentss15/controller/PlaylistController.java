@@ -7,9 +7,6 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Tra
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagPlaylistRequestDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagTrackRequestDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.PlaylistService;
 import com.example.soundcloudfinalprojectittalentss15.services.TagService;
 import jakarta.servlet.http.HttpSession;
