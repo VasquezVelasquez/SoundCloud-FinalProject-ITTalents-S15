@@ -24,6 +24,8 @@ target/
 **/mvnw
 *.cmd
 *.iml
+
+# Application properties
 **/application.properties
 **/application.yml
 
