@@ -24,6 +24,8 @@ target/
 **/mvnw
 *.cmd
 *.iml
+**/application.properties
+**/application.yml
 
 ### NetBeans ###
 /nbproject/private/
