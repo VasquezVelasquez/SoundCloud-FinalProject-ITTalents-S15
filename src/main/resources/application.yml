@@ -1,8 +1,8 @@
 cloud:
   aws:
     credentials:
-      access-key: AKIAT56GGR2ICXU72ZX4
-      secret-key:
+      access-key: AKIAT56GGR2IIKQYXPJR
+      secret-key: ${aws.credentials.secret-key}
       region:
         static: eu-central-1
         auto: false
@@ -12,6 +12,8 @@ application :
     name: soundcloudfinalprojectseason15
 
 spring:
+  profiles:
+    active: dev
   servlet:
     multipart:
       enabled: true
@@ -26,3 +28,5 @@ logging:
     com:
       amazonaws:
         request: DEBUG
+
+

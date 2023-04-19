@@ -27,7 +27,7 @@ target/
 
 # Application properties
 **/application-dev.properties
-**/application.yml
+
 
 ### NetBeans ###
 /nbproject/private/
