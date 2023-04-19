@@ -31,12 +31,12 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/users/login")
-    public UserWithoutPasswordDTO login(@RequestBody LoginDTO dto, HttpSession s) {
+    public UserWithoutPasswordDTO login(@RequestBody LoginDTO dto, HttpSession s, HttpServletRequest request) {
         if (isLogged(s)) {
             throw new BadRequestException("User is already logged in.");
         }
 
-        UserWithoutPasswordDTO responseDTO = userService.login(dto);
+        UserWithoutPasswordDTO responseDTO = userService.login(dto, getRequestSiteURL(request));
         s.setAttribute(LOGGED_ID, responseDTO.getId());
         return responseDTO;
     }
@@ -49,7 +49,7 @@ public class UserController extends AbstractController{
 
     @DeleteMapping("/users")
     public ResponseEntity<String> deleteAccount(@RequestBody PasswordDTO dto, HttpSession s) {
-        if (!isLogged(s)) {
+        if (isLogged(s)) {
             userService.deleteAccount(dto, (int) s.getAttribute(LOGGED_ID));
             s.invalidate();
             return ResponseEntity.ok("Account deleted successfully.");
@@ -78,7 +78,7 @@ public class UserController extends AbstractController{
         return ResponseEntity.ok("Password changed successful.");
     }
 
-    @PostMapping("/users/reset-password")
+    @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
         userService.resetPassword(dto);
         return ResponseEntity.ok().body("Password reset successfully");
