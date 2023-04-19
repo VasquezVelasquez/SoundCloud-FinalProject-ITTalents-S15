@@ -78,6 +78,12 @@ public class UserController extends AbstractController{
         return ResponseEntity.ok("Password changed successful.");
     }
 
+    @PostMapping("/users/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
+        userService.resetPassword(dto);
+        return ResponseEntity.ok().body("Password reset successfully");
+    }
+
     @GetMapping("/users/all")
     public List<UserWithoutPasswordDTO> getAll(){
         return userService.getAll();

@@ -45,6 +45,12 @@ public class User {
     private String backgroundPictureUrl;
     @Column
     private Boolean isVerified;
+    @Column
+    private int attempts;
+    @Column
+    private boolean isBlocked;
+    @Column
+    private String resetCode;
     @OneToMany(mappedBy = "user")
     private Set<Comment> comments;
     @ManyToMany

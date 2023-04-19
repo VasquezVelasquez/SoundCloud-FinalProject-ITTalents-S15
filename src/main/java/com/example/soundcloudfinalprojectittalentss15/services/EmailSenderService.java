@@ -3,6 +3,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,7 +21,7 @@ public class EmailSenderService {
         new Thread(() -> {
             try {
                 String toAddress = user.getEmail();
-                String fromAddress = "testsoundclouds15@gmail.com";
+                String fromAddress = "vasilmomchiltalents@gmail.com";
                 String senderName = "Sound Cloud";
                 String subject = "Please verify your registration";
                 String content = "Dear [[name]],<br>"
@@ -52,5 +53,26 @@ public class EmailSenderService {
                 throw new BadRequestException(e.getMessage());
             }
         }).start();
+    }
+
+    public void sendResetPasswordEmail(User user) {
+        String fromAddress = "vasilmomchiltalents@gmail.com";
+        String subject = "Reset Password";
+        String siteURL = ""; // Configure your site URL here
+        String resetURL = siteURL + "/reset-password?code=" + user.getResetCode();
+        String content = "To reset your password, please click the link below:\n" + resetURL;
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        try {
+            helper.setFrom(fromAddress);
+            helper.setTo(user.getEmail());
+            helper.setSubject(subject);
+            helper.setText(content);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error sending reset password email.", e);
+        }
     }
 }

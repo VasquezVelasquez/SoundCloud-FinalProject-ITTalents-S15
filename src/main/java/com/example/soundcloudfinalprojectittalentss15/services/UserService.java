@@ -39,6 +39,7 @@ public class UserService extends AbstractService {
         emailService.sendVerificationEmail(user, siteURL);
         String verificationCode = RandomString.make(64);
         user.setVerificationCode(verificationCode);
+        user.setBlocked(false);
 
         userRepository.save(user);
         return mapper.map(user, UserWithoutPasswordDTO.class);
@@ -52,9 +53,28 @@ public class UserService extends AbstractService {
     public UserWithoutPasswordDTO login(LoginDTO dto) {
         User user = getUserByEmail(dto.getEmail());
         if (!encoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new UnauthorizedException("Wrong credentials.");
+            int attempts = user.getAttempts() + 1;
+            user.setAttempts(attempts);
+            userRepository.save(user);
+
+            if (attempts >= 3) {
+                user.setBlocked(true);
+                String resetCode = RandomString.make(64);
+                user.setResetCode(resetCode);
+                userRepository.save(user);
+                emailService.sendResetPasswordEmail(user);
+                throw new UnauthorizedException("User account is blocked. A reset password email has been sent.");
+            } else {
+                throw new UnauthorizedException("Wrong credentials.");
+            }
         }
+
+        if (user.isBlocked()) {
+            throw new UnauthorizedException("User account is blocked. Please reset your password.");
+        }
+
         user.setLastLogin(LocalDateTime.now());
+        user.setAttempts(0);
         userRepository.save(user);
         return mapper.map(user, UserWithoutPasswordDTO.class);
     }
@@ -174,4 +194,22 @@ public class UserService extends AbstractService {
             userRepository.delete(user);
         }
     }
+
+    public void resetPassword(ResetPasswordDTO dto) {
+        User user = getUserByEmail(dto.getEmail());
+
+        if (!user.getResetCode().equals(dto.getResetCode())) {
+            throw new BadRequestException("Invalid reset code.");
+        }
+        if (!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {
+            throw new BadRequestException("Passwords mismatch.");
+        }
+
+        user.setPassword(encoder.encode(dto.getNewPassword()));
+        user.setAttempts(0);
+        user.setBlocked(false);
+        user.setResetCode(null);
+        userRepository.save(user);
+    }
+
 }

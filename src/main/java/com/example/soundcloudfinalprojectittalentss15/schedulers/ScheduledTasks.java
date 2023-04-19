@@ -15,7 +15,7 @@ public class ScheduledTasks {
     private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 
 //    @Scheduled(cron = "0 * * * * *") // Run every minute
-    @Scheduled(fixedRate = 60000) // Run every 1 minute
+    @Scheduled(fixedRate = 30000) // Run every 1 minute
     public void deleteNonVerifiedUsers() {
         logger.info("Starting deleteNonVerifiedUsers scheduled task");
         userService.deleteNonVerifiedUsers();
