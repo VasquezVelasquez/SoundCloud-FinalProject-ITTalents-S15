@@ -2,7 +2,7 @@ cloud:
   aws:
     credentials:
       access-key: AKIAT56GGR2ICXU72ZX4
-      secret-key: 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
+      secret-key: 
       region:
         static: eu-central-1
         auto: false
