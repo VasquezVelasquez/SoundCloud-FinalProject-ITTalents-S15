@@ -40,6 +40,7 @@ public class UserService extends AbstractService {
         String verificationCode = RandomString.make(64);
         user.setVerificationCode(verificationCode);
         user.setBlocked(false);
+        user.setAttempts(0);
 
         userRepository.save(user);
         return mapper.map(user, UserWithoutPasswordDTO.class);
@@ -50,14 +51,15 @@ public class UserService extends AbstractService {
         return mapper.map(user, UserWithoutPasswordDTO.class);
     }
 
+    @Transactional
     public UserWithoutPasswordDTO login(LoginDTO dto) {
         User user = getUserByEmail(dto.getEmail());
         if (!encoder.matches(dto.getPassword(), user.getPassword())) {
-            int attempts = user.getAttempts() + 1;
-            user.setAttempts(attempts);
+//            int attempts = user.getAttempts() + 1;
+            user.setAttempts(user.getAttempts() + 1);
             userRepository.save(user);
 
-            if (attempts >= 3) {
+            if (user.getAttempts() >= 3) {
                 user.setBlocked(true);
                 String resetCode = RandomString.make(64);
                 user.setResetCode(resetCode);
