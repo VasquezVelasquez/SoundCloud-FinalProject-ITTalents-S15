@@ -82,7 +82,6 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
-<<<<<<< Updated upstream
     @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
@@ -94,15 +93,12 @@ public class TrackService extends AbstractService{
         return trackInfoDTO;
     }
 
-=======
->>>>>>> Stashed changes
+
     public TrackInfoDTO showTrackById(int id) {
         Track track  = getTrackById(id);
         return mapper.map(track, TrackInfoDTO.class);
     }
 
-
-<<<<<<< Updated upstream
     @Transactional
     public File download(String url) {
         File dir = new File(TRACKS_DIRECTORY);
@@ -116,8 +112,6 @@ public class TrackService extends AbstractService{
         throw new NotFoundException("Track not found");
     }
 
-=======
->>>>>>> Stashed changes
     public List<TrackInfoDTO> getAllTracksByUser(int userId) {
         User user = getUserById(userId);
         List<Track> tracks = trackRepository.findAllByOwner(user);
