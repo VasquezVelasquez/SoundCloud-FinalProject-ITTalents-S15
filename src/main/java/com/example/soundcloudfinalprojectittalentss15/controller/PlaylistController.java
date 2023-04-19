@@ -4,8 +4,6 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Cre
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.TrackIdDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
-import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagPlaylistRequestDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.PlaylistService;
 import com.example.soundcloudfinalprojectittalentss15.services.TagService;
@@ -79,7 +77,6 @@ public class PlaylistController extends AbstractController{
         int id = getLoggedId(s);
         return playlistService.getLikedPlaylists(id);
     }
-
     @PostMapping("playlists/search")
     public Page<PlaylistDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {
         return playlistService.searchPlaylistsByTags(request);

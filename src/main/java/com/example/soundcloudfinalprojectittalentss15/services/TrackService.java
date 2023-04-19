@@ -11,7 +11,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadReques
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
-import lombok.SneakyThrows;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,33 +27,6 @@ import java.util.stream.Collectors;
 @Service
 
 public class TrackService extends AbstractService{
-
-//    @SneakyThrows
-//    @Transactional
-
-//    public TrackInfoDTO upload (MultipartFile trackFile, String title, String description, int loggedId) {
-//        if(title.length() >= 255) {
-//            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
-//        }
-//        if(description.length() >= 500) {
-//            throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
-//        }
-//        if(!isValidAudioFile(trackFile)) {
-//            throw new BadRequestException("File type not accepted, you should select a mp3 file!");
-//        }
-//        String name = createFileName(trackFile);
-//        String url = createFile(trackFile, name, TRACKS_DIRECTORY);
-//
-//        Track track = new Track();
-//        track.setTitle(title);
-//        track.setUploadedAt(LocalDateTime.now());
-//        track.setTrackUrl(url);
-//        track.setDescription(description);
-//        track.setOwner(getUserById(loggedId));
-//        track.setPlays(1);
-//        trackRepository.save(track);
-//        return mapper.map(track, TrackInfoDTO.class);
-//    }
 
     @Transactional
     public TrackInfoDTO editTrack(int trackId, TrackEditInfoDTO trackEditDTO, int loggedId) {
@@ -82,6 +55,7 @@ public class TrackService extends AbstractService{
         return mapper.map(track, TrackInfoDTO.class);
     }
 
+
     @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
@@ -97,6 +71,7 @@ public class TrackService extends AbstractService{
         Track track  = getTrackById(id);
         return mapper.map(track, TrackInfoDTO.class);
     }
+
 
     @Transactional
     public File download(String url) {
