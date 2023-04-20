@@ -79,6 +79,7 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/reset-password")
+    //todo check if new password matches the old one
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
         userService.resetPassword(dto);
         return ResponseEntity.ok().body("Password reset successfully");

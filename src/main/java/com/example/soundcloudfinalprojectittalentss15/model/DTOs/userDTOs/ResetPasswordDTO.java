@@ -11,6 +11,7 @@ import lombok.Setter;
 public class ResetPasswordDTO {
 
     private String email;
+    //TODO proper message
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Weak pass")
     private String newPassword;
     private String confirmNewPassword;

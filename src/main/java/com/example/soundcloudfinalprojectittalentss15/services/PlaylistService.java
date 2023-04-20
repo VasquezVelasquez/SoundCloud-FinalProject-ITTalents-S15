@@ -25,6 +25,7 @@ public class PlaylistService extends AbstractService{
     public PlaylistDTO likePlaylist(int playlistId, int userId) {
         Playlist playlist = getPlaylistById(playlistId);
         User u = getUserById(userId);
+        //TODO tell if liked or not
         if (u.getLikedPlaylists().contains(playlist)) {
             u.getLikedPlaylists().remove(playlist);
         } else {
@@ -37,6 +38,7 @@ public class PlaylistService extends AbstractService{
     @Transactional
     public PlaylistDTO create(CreatePlaylistDTO dto, int userId) {
         Track track = getTrackById(dto.getTrackId());
+        //TODO FIX!!!
         Playlist playlist = mapper.map(dto, Playlist.class);
         playlist.setTitle(dto.getTitle());
         playlist.setOwner(getUserById(userId));

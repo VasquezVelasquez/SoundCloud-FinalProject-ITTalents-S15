@@ -23,14 +23,12 @@ public class MediaService extends AbstractService{
 
     @SneakyThrows
     public UserWithoutPasswordDTO uploadProfilePicture(MultipartFile file, int userId) {
-        String name = createFileName(file);
-        File dir = new File("pictures");
-        if(!dir.exists()) {
-            dir.mkdirs();
+        if(!isValidPictureFile(file)) {
+            throw new BadRequestException("File type not accepted!");
         }
-        File f = new File(dir, name);
-        Files.copy(file.getInputStream(), f.toPath());
-        String url = dir.getName() + File.separator + f.getName();
+        String name = createFileName(file);
+        String url = createFile(file, name, PICTURES_DIRECTORY);
+
         User u = getUserById(userId);
         if (u.getProfilePictureUrl() != null) {
             // Delete the current profile picture
@@ -39,24 +37,19 @@ public class MediaService extends AbstractService{
                 currentProfilePicture.delete();
             }
         }
-
         u.setProfilePictureUrl(url);
         userRepository.save(u);
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 
-
-
     @SneakyThrows
     public UserWithoutPasswordDTO uploadBackgroundPicture(MultipartFile file, int userId) {
-        String name = createFileName(file);
-        File dir = new File("pictures");
-        if(!dir.exists()) {
-            dir.mkdirs();
+        if(!isValidPictureFile(file)) {
+            throw new BadRequestException("File type not accepted!");
         }
-        File f = new File(dir, name);
-        Files.copy(file.getInputStream(), f.toPath());
-        String url = dir.getName() + File.separator + f.getName();
+        String name = createFileName(file);
+        String url = createFile(file, name, PICTURES_DIRECTORY);
+
         User u = getUserById(userId);
         if (u.getBackgroundPictureUrl() != null) {
             File currentProfileBackground = new File(u.getBackgroundPictureUrl());
@@ -64,14 +57,13 @@ public class MediaService extends AbstractService{
                 currentProfileBackground.delete();
             }
         }
-
         u.setBackgroundPictureUrl(url);
         userRepository.save(u);
         return mapper.map(u, UserWithoutPasswordDTO.class);
     }
 
     public File download(String fileName) {
-        File dir = new File("pictures");
+        File dir = new File(PICTURES_DIRECTORY);
 
         File f = new File(dir, fileName);
         System.out.println(f.getName());
@@ -90,18 +82,11 @@ public class MediaService extends AbstractService{
             throw new UnauthorizedException("Not authorized action!");
         }
         String name = createFileName(file);
-        String url = createFile(file, name, "pictures");
+        String url = createFile(file, name, PICTURES_DIRECTORY);
         track.setCoverPictureUrl(url);
         trackRepository.save(track);
         return mapper.map(track, TrackInfoDTO.class);
     }
-
-
-
-
-
-
-
 
     @SneakyThrows
     public PlaylistDTO uploadPlaylistCoverPicture(MultipartFile file, int playlistId, int loggedId) {

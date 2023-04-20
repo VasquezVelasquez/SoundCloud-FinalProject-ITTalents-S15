@@ -17,4 +17,5 @@ public class EditPlaylistInfoDTO {
     private boolean isPublic;
     @Size(max = 500, message = "Title name must contains maximum 500 characters")
     private String description;
+
 }

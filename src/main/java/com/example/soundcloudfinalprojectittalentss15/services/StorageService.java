@@ -36,7 +36,9 @@ public class StorageService extends AbstractService {
 
     @SneakyThrows
     public TrackInfoDTO uploadTrack(MultipartFile trackFile, String title, String description, int loggedId) {
-        isValidAudioFile(trackFile);
+        if (!isValidAudioFile(trackFile)) {
+            throw new BadRequestException("File type not accepted!");
+        }
         String fileName = createFileName(trackFile);
         Path tempFilePath = null;
 

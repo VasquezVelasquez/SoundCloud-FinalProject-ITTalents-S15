@@ -116,7 +116,7 @@ public class UserService extends AbstractService {
     @Transactional
     public void changePassword(ChangePasswordDTO dto, int userId) {
         User user = getUserById(userId);
-        if (!encoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!encoder.matches(dto.getOldPassword(), user.getPassword())) {
             throw new UnauthorizedException("Wrong credentials.");
         }
         if (!dto.getNewPassword().equals(dto.getConfirmNewPassword())) {

@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ChangePasswordDTO {
 
-    private String password;
+    private String oldPassword;
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Weak pass")
     private String newPassword;

@@ -1,6 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,4 +21,6 @@ public class PlaylistDTO {
     private boolean isPublic;
     private String coverPictureUrl;
     private List<TagDTO> tags;
+    //TODO make track basic info DTO
+    private List<TrackInfoDTO> tracks;
 }
