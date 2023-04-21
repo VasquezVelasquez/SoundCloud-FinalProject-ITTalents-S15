@@ -4,12 +4,13 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,7 +67,6 @@ public class UserService extends AbstractService {
         return successfulLogin(user);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void handleFailedLogin(User user, String siteURL) {
         user.setAttempts(user.getAttempts() + 1);
 
@@ -82,7 +82,6 @@ public class UserService extends AbstractService {
         userRepository.save(user);
     }
 
-    @Transactional
     UserWithoutPasswordDTO successfulLogin(User user) {
         user.setLastLogin(LocalDateTime.now());
         user.setAttempts(0);
@@ -171,19 +170,19 @@ public class UserService extends AbstractService {
         return followDTO;
     }
 
-    public List<UserWithoutPasswordDTO> getFollowers(int loggedId) {
-        List<User> followers = userRepository.getFollowers(loggedId);
-        return followers.stream()
-                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
-                .collect(Collectors.toList());
-    }
+//    public List<UserWithoutPasswordDTO> getFollowers(int loggedId) {
+//        List<User> followers = userRepository.getFollowers(loggedId);
+//        return followers.stream()
+//                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
-    public List<UserWithoutPasswordDTO> getFollowed(int loggedId) {
-        List<User> followed = userRepository.getFollowed(loggedId);
-        return followed.stream()
-                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
-                .collect(Collectors.toList());
-    }
+//    public List<UserWithoutPasswordDTO> getFollowed(int loggedId) {
+//        List<User> followed = userRepository.getFollowed(loggedId);
+//        return followed.stream()
+//                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
+//                .collect(Collectors.toList());
+//    }
 
     public String verifyAccount(String code) {
         Optional<User> optionalUser = userRepository.findByVerificationCode(code);
@@ -223,5 +222,22 @@ public class UserService extends AbstractService {
         user.setResetCode(null);
         userRepository.save(user);
     }
+
+    public Page<UserBasicInfoDTO> getFollowers(int pageNumber, int loggedId) {
+        int pageSize = 10;
+        org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> followersPage = userRepository.findAllFollowers(pageable, loggedId);
+
+        return followersPage.map(follower -> mapper.map(follower, UserBasicInfoDTO.class));
+    }
+
+    public Page<UserBasicInfoDTO> getFollowedUsers(int pageNumber, int loggedId) {
+        int pageSize = 10;
+        org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<User> followedUsersPage = userRepository.findAllFollowedUsers(pageable, loggedId);
+
+        return followedUsersPage.map(followed -> mapper.map(followed, UserBasicInfoDTO.class));
+    }
+
 
 }

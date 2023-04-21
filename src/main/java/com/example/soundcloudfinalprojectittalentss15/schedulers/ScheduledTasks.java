@@ -14,8 +14,9 @@ public class ScheduledTasks {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
 
-//    @Scheduled(cron = "0 * * * * *") // Run every minute
-    @Scheduled(fixedRate = 60000) // Run every 1 minute
+//    @Scheduled(cron = "0 * * * * *") //   A cron expression defines a set of times to execute a task. In this example,
+//                                          the task will be executed at the top of every minute.
+    @Scheduled(fixedRate = 60000) // The task will be executed every minute, regardless of when the previous execution finished.
     public void deleteNonVerifiedUsers() {
         logger.info("Starting deleteNonVerifiedUsers scheduled task");
         userService.deleteNonVerifiedUsers();

@@ -56,23 +56,25 @@ public class EmailSenderService {
     }
 
     public void sendResetPasswordEmail(User user, String siteURL) {
-        String fromAddress = "vasilmomchiltalents@gmail.com";
-        String subject = "Reset Password";
-        String resetURL = siteURL + "/reset-password";
-        String content = "Your reset password code is : " + user.getResetCode() + "\n" +
-                "To reset your password, please click the link below:\n" + resetURL;
+        new Thread(() -> {
+            try {
+                String fromAddress = "vasilmomchiltalents@gmail.com";
+                String subject = "Reset Password";
+                String resetURL = siteURL + "/reset-password";
+                String content = "Your reset password code is : " + user.getResetCode() + "\n" +
+                        "To reset your password, please click the link below:\n" + resetURL;
 
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        try {
-            helper.setFrom(fromAddress);
-            helper.setTo(user.getEmail());
-            helper.setSubject(subject);
-            helper.setText(content);
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Error sending reset password email.", e);
-        }
+                    helper.setFrom(fromAddress);
+                    helper.setTo(user.getEmail());
+                    helper.setSubject(subject);
+                    helper.setText(content);
+                    mailSender.send(message);
+                } catch (MessagingException e) {
+                    throw new RuntimeException("Error sending reset password email.", e);
+                }
+        }).start();
     }
 }

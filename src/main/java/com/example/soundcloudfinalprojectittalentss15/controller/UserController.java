@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,14 +91,19 @@ public class UserController extends AbstractController{
         return userService.getAll();
     }
 
+//    @GetMapping("/users/followers")
+//    public List<UserWithoutPasswordDTO> getFollowers(HttpSession s) {
+//        return userService.getFollowers(getLoggedId(s));
+//    }
+
     @GetMapping("/users/followers")
-    public List<UserWithoutPasswordDTO> getFollowers(HttpSession s) {
-        return userService.getFollowers(getLoggedId(s));
+    public Page<UserBasicInfoDTO> getFollowersWithPagination(@RequestParam(name = "page", defaultValue = "0") int pageNumber, HttpSession s) {
+        return userService.getFollowers(pageNumber, getLoggedId(s));
     }
 
     @GetMapping("/users/followed")
-    public List<UserWithoutPasswordDTO> getFollowed(HttpSession s) {
-        return userService.getFollowed(getLoggedId(s));
+    public Page<UserBasicInfoDTO> getFollowed(@RequestParam(name = "page", defaultValue = "0") int pageNumber, HttpSession s) {
+        return userService.getFollowedUsers(pageNumber, getLoggedId(s));
     }
 
     @GetMapping("/verify")

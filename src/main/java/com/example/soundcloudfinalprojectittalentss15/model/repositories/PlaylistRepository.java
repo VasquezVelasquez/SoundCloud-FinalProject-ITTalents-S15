@@ -21,6 +21,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
     @Query("SELECT t FROM playlists t JOIN t.tags tag WHERE tag.name IN (:tags) GROUP BY t HAVING COUNT(t) = :size")
     Page<Playlist> findByTags(@Param("tags") List<String> tags, @Param("size") long size, Pageable pageable);
 
+    //TODO in case if PL is not public
     List<Playlist> findByOwnerId(int ownerId);
 
     Optional<Playlist> getPlaylistsById(int id);
