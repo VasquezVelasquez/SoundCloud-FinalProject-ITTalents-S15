@@ -1,8 +1,11 @@
 package com.example.soundcloudfinalprojectittalentss15.model.repositories;
 
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
+import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +36,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     List<User> findNonVerifiedUsersRegisteredBefore(LocalDateTime dateTimeThreshold);
 
     Optional<User> findByVerificationCode(String code);
+
+//    @Query(value = "SELECT f.* FROM followers AS f WHERE f.followed_id = :logged_id", nativeQuery = true)
+//    Page<User> findAllFollowers(Pageable pageable, int loggedId);
+
+    @Query(value = "SELECT u.* FROM users AS u JOIN followers AS f ON u.id = f.follower_id WHERE f.followed_id = :loggedId", nativeQuery = true)
+    Page<User> findAllFollowers(Pageable pageable, int loggedId);
+
+    @Query(value = "SELECT u.* FROM users AS u JOIN followers AS f ON u.id = f.followed_id WHERE f.follower_id = :loggedId", nativeQuery = true)
+    Page<User> findAllFollowedUsers(Pageable pageable, int loggedId);
 }
