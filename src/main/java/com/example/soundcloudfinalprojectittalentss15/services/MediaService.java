@@ -95,7 +95,7 @@ public class MediaService extends AbstractService{
             throw new UnauthorizedException("Not authorized action!");
         }
         String fileName = createFileName(file);
-        String url = createFile(file, fileName, "pictures");
+        String url = createFile(file, fileName, PICTURES_DIRECTORY);
 
         if (playlist.getCoverPictureUrl() != null) {
             Files.deleteIfExists(Paths.get(playlist.getCoverPictureUrl()));

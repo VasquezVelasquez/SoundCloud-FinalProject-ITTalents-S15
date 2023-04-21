@@ -10,6 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TagDTO {
 
-    @Size(min = 4, max = 50, message = "The title must be between 4 and 255 characters")
     private String name;
 }

@@ -7,18 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentInfoDTO {
-
-    private int id;
-    private int userId;
+public class ReplyInfoDTO {
+    private int ownerId;
     private String content;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime postedAt;
-
-
+    private int parentCommentId;
 }

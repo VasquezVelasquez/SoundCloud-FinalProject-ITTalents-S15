@@ -7,7 +7,6 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
@@ -17,10 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,7 +102,7 @@ public class TrackService extends AbstractService{
 
     public Page<TrackInfoDTO> getAllTracksWithPagination(int pageNumber) {
         int pageSize = 10;
-        org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "uploadedAt"));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "uploadedAt"));
         Page<Track> tracksPage = trackRepository.findAll(pageable);
 
         return tracksPage.map(track -> mapper.map(track, TrackInfoDTO.class));

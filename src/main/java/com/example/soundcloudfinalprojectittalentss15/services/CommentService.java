@@ -7,6 +7,10 @@ import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,11 +21,11 @@ import java.util.stream.Collectors;
 public class CommentService extends AbstractService{
 
 
-    public List<CommentInfoDTO> getAllByTrack(int trackId) {
-        getTrackById(trackId);
-        List<Comment> comments = commentRepository.findByTrackId(trackId);
-        return comments.stream().map(comment -> mapper.map(comment, CommentInfoDTO.class))
-                .collect(Collectors.toList());
+    public Page<CommentInfoDTO> getAllByTrack(int trackId, int pageNumber) {
+        int pageSize = 20;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "postedAt"));
+        Page<Comment> commentsPage = commentRepository.findAllByTrackId(trackId, pageable);
+        return commentsPage.map(comment -> mapper.map(comment, CommentInfoDTO.class));
     }
 
     @Transactional

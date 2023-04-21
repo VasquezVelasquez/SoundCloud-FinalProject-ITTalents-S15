@@ -1,14 +1,11 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
-
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
@@ -16,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -34,6 +29,7 @@ public class StorageService extends AbstractService {
     @Value("${application.bucket.name}")
     private String bucketName;
 
+    @Transactional
     @SneakyThrows
     public TrackInfoDTO uploadTrack(MultipartFile trackFile, String title, String description, int loggedId) {
         if (!isValidAudioFile(trackFile)) {
@@ -58,10 +54,11 @@ public class StorageService extends AbstractService {
         track.setTrackUrl(fileName);
         track.setDescription(description);
         track.setOwner(getUserById(loggedId));
-        track.setPlays(1);
+        track.setPlays(0);
         trackRepository.save(track);
         return mapper.map(track, TrackInfoDTO.class);
     }
+
 
     public byte[] downloadTrack(String fileName) {
         S3Object s3Object =  s3Client.getObject(bucketName, fileName);
@@ -87,6 +84,5 @@ public class StorageService extends AbstractService {
         TrackInfoDTO trackInfoDTO = mapper.map(track, TrackInfoDTO.class);
         trackRepository.deleteById(trackId);
         return trackInfoDTO;
-
     }
 }

@@ -18,5 +18,4 @@ public class FollowDTO {
     private LocalDateTime followEventAt;
     private boolean isFollowing;
 
-    // Constructors, getters, and setters
 }

@@ -5,6 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadReques
 import com.example.soundcloudfinalprojectittalentss15.services.CommentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class CommentController extends AbstractController{
     private CommentService commentService;
 
     @GetMapping("/track/{trackId}/comments")
-    public List<CommentInfoDTO> getSongComments(@PathVariable int trackId) {
-        return commentService.getAllByTrack(trackId);
+    public Page<CommentInfoDTO> getSongComments(@PathVariable int trackId, @RequestParam(name = "page", defaultValue = "0") int pageNumber) {
+        return commentService.getAllByTrack(trackId, pageNumber);
 
     }
 
