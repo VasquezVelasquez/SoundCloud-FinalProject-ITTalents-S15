@@ -3,6 +3,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackLikeDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class TrackController extends AbstractController {
     }
 
     @PostMapping("tracks/{id}/like")
-    public TrackInfoDTO likeTrack(@PathVariable int id, HttpSession s) {
+    public TrackLikeDTO likeTrack(@PathVariable int id, HttpSession s) {
         int userId = getLoggedId(s);
         return trackService.likeTrack(id, userId);
 

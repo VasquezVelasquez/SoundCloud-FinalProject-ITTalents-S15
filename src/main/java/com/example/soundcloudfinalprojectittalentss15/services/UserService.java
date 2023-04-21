@@ -170,20 +170,6 @@ public class UserService extends AbstractService {
         return followDTO;
     }
 
-//    public List<UserWithoutPasswordDTO> getFollowers(int loggedId) {
-//        List<User> followers = userRepository.getFollowers(loggedId);
-//        return followers.stream()
-//                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<UserWithoutPasswordDTO> getFollowed(int loggedId) {
-//        List<User> followed = userRepository.getFollowed(loggedId);
-//        return followed.stream()
-//                .map(f -> mapper.map(f, UserWithoutPasswordDTO.class))
-//                .collect(Collectors.toList());
-//    }
-
     public String verifyAccount(String code) {
         Optional<User> optionalUser = userRepository.findByVerificationCode(code);
         if (optionalUser.isPresent()) {
@@ -206,6 +192,7 @@ public class UserService extends AbstractService {
         }
     }
 
+    @Transactional
     public void resetPassword(ResetPasswordDTO dto) {
         User user = getUserByEmail(dto.getEmail());
 

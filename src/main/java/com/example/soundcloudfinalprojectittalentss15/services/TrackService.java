@@ -5,6 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearc
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackEditInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackLikeDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
@@ -40,47 +41,24 @@ public class TrackService extends AbstractService{
     }
 
     @Transactional
-    public TrackInfoDTO likeTrack(int trackId, int loggedId) {
+    public TrackLikeDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         User u = getUserById(loggedId);
+        TrackLikeDTO dto = mapper.map(track, TrackLikeDTO.class);
         if (u.getLikedTracks().contains(track)) {
             u.getLikedTracks().remove(track);
+            dto.setLiked(false);
         } else {
             u.getLikedTracks().add(track);
+            dto.setLiked(true);
         }
         userRepository.save(u);
-        return mapper.map(track, TrackInfoDTO.class);
-    }
-
-
-    @Transactional
-    public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
-        Track track = getTrackById(trackId);
-        if(track.getOwner().getId() != loggedId) {
-            throw new UnauthorizedException("Action not allowed! ");
-        }
-        TrackInfoDTO trackInfoDTO = mapper.map(track, TrackInfoDTO.class);
-        trackRepository.deleteById(trackId);
-        return trackInfoDTO;
+        return dto;
     }
 
     public TrackInfoDTO showTrackById(int id) {
         Track track  = getTrackById(id);
         return mapper.map(track, TrackInfoDTO.class);
-    }
-
-
-    @Transactional
-    public File download(String url) {
-        File dir = new File(TRACKS_DIRECTORY);
-        File track = new File(dir, url);
-        if(track.exists()) {
-            Track file = trackRepository.findByTrackUrl(dir + File.separator + url);
-            file.setPlays(file.getPlays() + 1);
-            trackRepository.save(file);
-            return track;
-        }
-        throw new NotFoundException("Track not found");
     }
 
     public List<TrackInfoDTO> getAllTracksByUser(int userId) {
