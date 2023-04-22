@@ -3,6 +3,7 @@ package com.example.soundcloudfinalprojectittalentss15.services;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.CreatePlaylistDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.EditPlaylistInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.PlaylistLikeDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Playlist;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
@@ -22,24 +23,10 @@ import java.util.stream.Collectors;
 public class PlaylistService extends AbstractService{
 
     @Transactional
-    public PlaylistDTO likePlaylist(int playlistId, int userId) {
-        Playlist playlist = getPlaylistById(playlistId);
-        User u = getUserById(userId);
-        //TODO tell if liked or not
-        if (u.getLikedPlaylists().contains(playlist)) {
-            u.getLikedPlaylists().remove(playlist);
-        } else {
-            u.getLikedPlaylists().add(playlist);
-        }
-        userRepository.save(u);
-        return mapper.map(playlist, PlaylistDTO.class);
-    }
-
-    @Transactional
     public PlaylistDTO create(CreatePlaylistDTO dto, int userId) {
         Track track = getTrackById(dto.getTrackId());
         //TODO FIX!!!
-        Playlist playlist = mapper.map(dto, Playlist.class);
+        Playlist playlist = new Playlist();
         playlist.setTitle(dto.getTitle());
         playlist.setOwner(getUserById(userId));
         playlist.setPublic(dto.isPublic());
@@ -106,7 +93,10 @@ public class PlaylistService extends AbstractService{
         checkOwnership(playlist.getOwner().getId(), userId);
         Track track = getTrackById(trackId);
 
-        playlist.getTracks().remove(track);
+        if(!playlist.getTracks().remove(track)) {
+            throw new BadRequestException("The track is not in the playlist");
+        }
+        track.getPlaylists().remove(playlist);
         playlistRepository.save(playlist);
         return mapper.map(playlist, PlaylistDTO.class);
     }
@@ -125,5 +115,21 @@ public class PlaylistService extends AbstractService{
         long tagCount = tags.size();
         Page<Playlist> playlistPage = playlistRepository.findByTags(tags, tagCount, pageable);
         return playlistPage.map(p -> mapper.map(p, PlaylistDTO.class));
+    }
+
+    @Transactional
+    public PlaylistLikeDTO likePlaylist(int playlistId, int userId) {
+        Playlist playlist = getPlaylistById(playlistId);
+        User u = getUserById(userId);
+        PlaylistLikeDTO dto = mapper.map(playlist, PlaylistLikeDTO.class);
+        if (u.getLikedPlaylists().contains(playlist)) {
+            u.getLikedPlaylists().remove(playlist);
+            dto.setLiked(false);
+        } else {
+            u.getLikedPlaylists().add(playlist);
+            dto.setLiked(true);
+        }
+        userRepository.save(u);
+        return dto;
     }
 }

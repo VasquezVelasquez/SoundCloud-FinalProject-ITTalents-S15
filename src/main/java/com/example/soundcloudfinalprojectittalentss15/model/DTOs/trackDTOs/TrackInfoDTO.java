@@ -2,6 +2,7 @@ package com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs;
 
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserBasicInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserWithoutPasswordDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class TrackInfoDTO {
     private LocalDateTime uploadedAt;
     private String description;
     private String trackUrl;
-    private UserWithoutPasswordDTO owner;
+    private UserBasicInfoDTO owner;
     private int plays;
     private List<TagDTO> tags;
     private int likesCount;
