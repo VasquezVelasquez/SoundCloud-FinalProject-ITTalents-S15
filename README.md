@@ -1,4 +1,4 @@
-<pre>
+
 # 🎶 SoundCloud Spring: RESTful MVC Web App 🚀
 
 Welcome to **SoundCloud Spring**! A RESTful MVC web application built with ❤️ using Spring Framework, which enables users to enjoy and share their music just like on SoundCloud. 🎧
@@ -12,4 +12,3 @@ Welcome to **SoundCloud Spring**! A RESTful MVC web application built with ❤�
 - 📅 Order tracks by date: Keep up with the latest tracks sorted by their upload date 📈
 - 💖 Like a track: Show your love for your favorite tracks with a simple click 💓
 - 💬 Comment on songs: Share your thoughts and interact with other users 🗣️
-</pre>
