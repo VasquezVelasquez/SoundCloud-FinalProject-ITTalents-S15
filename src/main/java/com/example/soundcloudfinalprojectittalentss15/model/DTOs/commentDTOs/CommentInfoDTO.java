@@ -19,6 +19,7 @@ public class CommentInfoDTO {
     private String content;
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime postedAt;
+    private int parentCommentId;
 
 
 }

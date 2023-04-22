@@ -1,6 +1,7 @@
 package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.CommentInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.CreationCommentDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.services.CommentService;
 import jakarta.servlet.http.HttpSession;
@@ -23,9 +24,9 @@ public class CommentController extends AbstractController{
     }
 
     @PostMapping("/track/{trackId}/comments")
-    public CommentInfoDTO createComment(@PathVariable int trackId, @RequestBody String content, HttpSession s) {
+    public CommentInfoDTO createComment(@PathVariable int trackId, @RequestBody CreationCommentDTO creationCommentDTO, HttpSession s) {
         int userId = getLoggedId(s);
-        return commentService.createComment(trackId, content, userId);
+        return commentService.createComment(trackId, creationCommentDTO.getContent(), userId);
     }
 
     @GetMapping("/users/{userId}/comments")
@@ -37,9 +38,9 @@ public class CommentController extends AbstractController{
     }
 
     @PostMapping("/track/{trackId}/comments/{commentId}")
-    public CommentInfoDTO replyToComment(@PathVariable int trackId, @PathVariable int commentId, @RequestBody String content,  HttpSession s) {
+    public CommentInfoDTO replyToComment(@PathVariable int trackId, @PathVariable int commentId, @RequestBody CreationCommentDTO creationCommentDTO,  HttpSession s) {
         int userId = getLoggedId(s);
-        return commentService.createReply(trackId, commentId, content, userId);
+        return commentService.createReply(trackId, commentId, creationCommentDTO.getContent(), userId);
     }
 
     @DeleteMapping("/track/{trackId}/comments/{commentId}")

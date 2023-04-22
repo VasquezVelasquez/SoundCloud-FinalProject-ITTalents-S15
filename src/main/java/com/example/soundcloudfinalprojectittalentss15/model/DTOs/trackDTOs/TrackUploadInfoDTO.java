@@ -3,7 +3,6 @@ package com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserBasicInfoDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

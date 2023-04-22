@@ -21,6 +21,5 @@ public class PlaylistDTO {
     private boolean isPublic;
     private String coverPictureUrl;
     private List<TagDTO> tags;
-    //TODO make track basic info DTO
     private List<TrackInfoDTO> tracks;
 }

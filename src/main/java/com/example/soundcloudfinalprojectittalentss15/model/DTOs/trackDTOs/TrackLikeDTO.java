@@ -7,7 +7,7 @@ import lombok.Setter;
     @Setter
     @Getter
     @NoArgsConstructor
-    public class TrackLikeDTO extends TrackInfoDTO{
+    public class TrackLikeDTO extends TrackInfoDTO {
 
         private boolean isLiked;
 }
