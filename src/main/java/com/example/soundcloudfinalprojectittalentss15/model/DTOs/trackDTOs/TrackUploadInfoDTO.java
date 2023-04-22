@@ -1,9 +1,9 @@
 package com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs;
 
-
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.UserBasicInfoDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,10 +11,10 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-public class TrackInfoDTO {
+public class TrackUploadInfoDTO {
 
     private int id;
     private String title;
@@ -25,5 +25,4 @@ public class TrackInfoDTO {
     private UserBasicInfoDTO owner;
     private int plays;
     private List<TagDTO> tags;
-    private int numberOfLikes;
 }

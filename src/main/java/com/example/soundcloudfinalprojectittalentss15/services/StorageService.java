@@ -4,8 +4,10 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUploadInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
+import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
@@ -31,7 +33,10 @@ public class StorageService extends AbstractService {
 
     @Transactional
     @SneakyThrows
-    public TrackInfoDTO uploadTrack(MultipartFile trackFile, String title, String description, int loggedId) {
+    public TrackUploadInfoDTO uploadTrack(MultipartFile trackFile, String title, String description, int loggedId) {
+        if(trackFile.isEmpty()) {
+            throw new BadRequestException("No file added!");
+        }
         if (!isValidAudioFile(trackFile)) {
             throw new BadRequestException("File type not accepted!");
         }
@@ -56,11 +61,14 @@ public class StorageService extends AbstractService {
         track.setOwner(getUserById(loggedId));
         track.setPlays(0);
         trackRepository.save(track);
-        return mapper.map(track, TrackInfoDTO.class);
+        return mapper.map(track, TrackUploadInfoDTO.class);
     }
 
 
     public byte[] downloadTrack(String fileName) {
+        if(trackRepository.findByTrackUrl(fileName) == null) {
+            throw new NotFoundException("No such track! ");
+        }
         S3Object s3Object =  s3Client.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
@@ -77,6 +85,9 @@ public class StorageService extends AbstractService {
     @Transactional
     public TrackInfoDTO deleteTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
+        if(track == null) {
+            throw new NotFoundException("No such track! ");
+        }
         if(track.getOwner().getId() != loggedId) {
             throw new UnauthorizedException("Action not allowed! ");
         }

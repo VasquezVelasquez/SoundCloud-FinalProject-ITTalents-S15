@@ -40,19 +40,64 @@ public class TrackService extends AbstractService{
 
     }
 
+//    @Transactional
+//    public TrackLikeDTO likeTrack(int trackId, int loggedId) {
+//        Track track = getTrackById(trackId);
+//        User u = getUserById(loggedId);
+//        TrackLikeDTO dto = mapper.map(track, TrackLikeDTO.class);
+//        if (u.getLikedTracks().contains(track)) {
+//            u.getLikedTracks().remove(track);
+//            dto.setLiked(false);
+//        } else {
+//            u.getLikedTracks().add(track);
+//            dto.setLiked(true);
+//        }
+//        userRepository.save(u);
+//        dto.setNumberOfLikes(track.getNumberOfLikes());
+//        return dto;
+//    }
+//    @Transactional
+//    public TrackLikeDTO likeTrack(int trackId, int loggedId) {
+//        Track track = getTrackById(trackId);
+//        User u = getUserById(loggedId);
+//        boolean isLiked;
+//        if (u.getLikedTracks().contains(track)) {
+//            u.getLikedTracks().remove(track);
+//            isLiked = false;
+//        } else {
+//            u.getLikedTracks().add(track);
+//            isLiked = true;
+//        }
+//        userRepository.save(u);
+//        TrackLikeDTO dto = mapper.map(track, TrackLikeDTO.class);
+//        dto.setLiked(isLiked);
+//        dto.setNumberOfLikes(track.getNumberOfLikes());
+//
+//        return dto;
+//    }
+
     @Transactional
     public TrackLikeDTO likeTrack(int trackId, int loggedId) {
         Track track = getTrackById(trackId);
         User u = getUserById(loggedId);
-        TrackLikeDTO dto = mapper.map(track, TrackLikeDTO.class);
+
+        boolean isLiked;
+        int updatedNumberOfLikes;
         if (u.getLikedTracks().contains(track)) {
             u.getLikedTracks().remove(track);
-            dto.setLiked(false);
+            isLiked = false;
+            updatedNumberOfLikes = track.getNumberOfLikes() - 1;
         } else {
             u.getLikedTracks().add(track);
-            dto.setLiked(true);
+            isLiked = true;
+            updatedNumberOfLikes = track.getNumberOfLikes() + 1;
         }
         userRepository.save(u);
+        TrackLikeDTO dto = mapper.map(track, TrackLikeDTO.class);
+
+        dto.setLiked(isLiked);
+        dto.setNumberOfLikes(updatedNumberOfLikes);
+
         return dto;
     }
 

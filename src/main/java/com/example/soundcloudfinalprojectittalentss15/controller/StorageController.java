@@ -2,6 +2,7 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUploadInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.StorageService;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
@@ -20,8 +21,8 @@ public class StorageController extends AbstractController{
     private StorageService storageService;
 
     @PostMapping("/tracks")
-    public TrackInfoDTO upload(@RequestParam("track") MultipartFile trackFile, @RequestParam String title,
-                               @RequestParam String description, HttpSession s) {
+    public TrackUploadInfoDTO upload(@RequestParam("track") MultipartFile trackFile, @RequestParam String title,
+                                     @RequestParam String description, HttpSession s) {
         return storageService.uploadTrack(trackFile, title, description,  getLoggedId(s));
     }
 
