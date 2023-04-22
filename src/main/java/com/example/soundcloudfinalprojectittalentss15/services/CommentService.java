@@ -30,7 +30,7 @@ public class CommentService extends AbstractService{
 
     @Transactional
     public CommentInfoDTO createComment(int trackId, String content, int userId) {
-        if(content.length() >= 500) {
+            if(content.length() >= 500) {
             throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
         }
         Track track = getTrackById(trackId);
@@ -50,6 +50,9 @@ public class CommentService extends AbstractService{
 
     @Transactional
     public CommentInfoDTO createReply(int trackId, int commentId, String content, int userId) {
+        if(!trackHasComment(trackId, commentId)) {
+            throw new BadRequestException("Comment doesn't correspond to the track.");
+        }
         if(content.length() >= 500) {
             throw new BadRequestException("Content length exceeded. 500 symbols maximum! ");
         }
@@ -64,6 +67,9 @@ public class CommentService extends AbstractService{
 
     @Transactional
     public CommentInfoDTO deleteComment(int trackId, int commentId, int userId) {
+        if(!trackHasComment(trackId, commentId)) {
+            throw new BadRequestException("Comment doesn't correspond to the track.");
+        }
         Track track = getTrackById(trackId);
         Comment comment = getCommentById(commentId);
         if(trackId != comment.getTrack().getId()) {
@@ -85,5 +91,9 @@ public class CommentService extends AbstractService{
         comment.setPostedAt(LocalDateTime.now());
         return comment;
 
+    }
+
+    public boolean trackHasComment(int trackId, int commentId) {
+        return getCommentById(commentId).getTrack().getId() == trackId;
     }
 }
