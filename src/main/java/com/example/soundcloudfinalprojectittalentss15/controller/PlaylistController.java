@@ -57,11 +57,11 @@ public class PlaylistController extends AbstractController{
     }
 
 
-    @GetMapping("/playlists")
-    public List<PlaylistDTO> getPlaylistsByName(@RequestParam(required = false) String name, HttpSession s) {
+    @GetMapping("/playlists/search")
+    public List<PlaylistDTO> getPlaylistsByTitle(@RequestParam(required = false) String title, HttpSession s) {
         checkLogged(s);
-        if (name != null) {
-            return playlistService.getPlaylistsByName(name);
+        if (title != null) {
+            return playlistService.getPlaylistsByTitle(title);
         }
         return null;
     }
@@ -77,8 +77,8 @@ public class PlaylistController extends AbstractController{
         int id = getLoggedId(s);
         return playlistService.getLikedPlaylists(id);
     }
-    @PostMapping("playlists/search")
-    public Page<PlaylistDTO> searchTracksByTags(@RequestBody TagSearchDTO request) {
+    @PostMapping("/playlists/search")
+    public Page<PlaylistDTO> searchPlaylistsByTags(@RequestBody TagSearchDTO request) {
         return playlistService.searchPlaylistsByTags(request);
     }
 

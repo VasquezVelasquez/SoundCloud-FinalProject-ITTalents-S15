@@ -25,7 +25,6 @@ public class PlaylistService extends AbstractService{
     @Transactional
     public PlaylistDTO create(CreatePlaylistDTO dto, int userId) {
         Track track = getTrackById(dto.getTrackId());
-        //TODO FIX!!!
         Playlist playlist = new Playlist();
         playlist.setTitle(dto.getTitle());
         playlist.setOwner(getUserById(userId));
@@ -61,7 +60,7 @@ public class PlaylistService extends AbstractService{
         if (!userRepository.existsById(id)) {
             throw new BadRequestException("User doesn't exist.");
         }
-        List<Playlist> playlists = playlistRepository.findByOwnerId(id);
+        List<Playlist> playlists = playlistRepository.findByOwnerIdAndIsPublic(id);
         return playlists.stream()
                 .map(playlist -> mapper.map(playlist, PlaylistDTO.class))
                 .collect(Collectors.toList());
@@ -79,9 +78,8 @@ public class PlaylistService extends AbstractService{
         return mapper.map(playlist, PlaylistDTO.class);
     }
 
-
-    public List<PlaylistDTO> getPlaylistsByName(String name) {
-        List<Playlist> playlists = playlistRepository.getAllByTitleContainingIgnoreCase(name);
+    public List<PlaylistDTO> getPlaylistsByTitle(String title) {
+        List<Playlist> playlists = playlistRepository.findAllByTitleContainingIgnoreCaseAndIsPublic(title);
         return playlists.stream()
                 .map(playlist -> mapper.map(playlist, PlaylistDTO.class))
                 .collect(Collectors.toList());
@@ -120,6 +118,9 @@ public class PlaylistService extends AbstractService{
     @Transactional
     public PlaylistLikeDTO likePlaylist(int playlistId, int userId) {
         Playlist playlist = getPlaylistById(playlistId);
+        if ((playlist.getOwner().getId() != userId) && !playlist.isPublic()) {
+            throw new BadRequestException("Playlist is not public");
+        }
         User u = getUserById(userId);
         PlaylistLikeDTO dto = mapper.map(playlist, PlaylistLikeDTO.class);
         if (u.getLikedPlaylists().contains(playlist)) {
