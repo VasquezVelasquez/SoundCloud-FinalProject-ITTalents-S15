@@ -44,9 +44,7 @@ public class Track {
             joinColumns = @JoinColumn(name = "track_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> tags;
-    @Column(name = "likes")
-    private int likesCount;
+    private Set<Tag> tags; 
 
 
     @Override
