@@ -80,7 +80,6 @@ public class UserController extends AbstractController{
     }
 
     @PostMapping("/reset-password")
-    //todo check if new password matches the old one
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordDTO dto) {
         userService.resetPassword(dto);
         return ResponseEntity.ok().body("Password reset successfully");
@@ -91,10 +90,6 @@ public class UserController extends AbstractController{
         return userService.getAll();
     }
 
-//    @GetMapping("/users/followers")
-//    public List<UserWithoutPasswordDTO> getFollowers(HttpSession s) {
-//        return userService.getFollowers(getLoggedId(s));
-//    }
 
     @GetMapping("/users/followers")
     public Page<UserBasicInfoDTO> getFollowersWithPagination(@RequestParam(name = "page", defaultValue = "0") int pageNumber, HttpSession s) {

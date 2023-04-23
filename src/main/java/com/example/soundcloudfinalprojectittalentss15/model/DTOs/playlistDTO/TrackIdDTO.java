@@ -10,5 +10,4 @@ import lombok.Setter;
 public class TrackIdDTO {
 
     private int trackId;
-    //TODO: do we need it?
 }

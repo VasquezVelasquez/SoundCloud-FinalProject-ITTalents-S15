@@ -1,8 +1,6 @@
 package com.example.soundcloudfinalprojectittalentss15.model.entities;
 
-
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 

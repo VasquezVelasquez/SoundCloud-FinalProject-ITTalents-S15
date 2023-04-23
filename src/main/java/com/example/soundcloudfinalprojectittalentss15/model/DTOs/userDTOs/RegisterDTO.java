@@ -13,8 +13,10 @@ public class RegisterDTO {
 
     @Email(message = "Invalid email")
     private String email;
-    //todo add proper message
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Weak pass")
+
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
+                      message = "Password must be at least 8 characters long and contain at least one digit, " +
+                        "one lowercase letter, one uppercase letter, and one special character")
     private String password;
 
     private String confirmedPassword;

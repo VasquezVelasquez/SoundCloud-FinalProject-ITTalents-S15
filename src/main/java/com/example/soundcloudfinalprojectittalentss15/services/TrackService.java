@@ -8,7 +8,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackLikeDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.Track;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
-import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
+
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
 import jakarta.transaction.Transactional;
 
@@ -17,8 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,12 +1,8 @@
 package com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs;
 
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.Set;
 
 @Setter
 @Getter

@@ -34,7 +34,7 @@ public class MediaController extends AbstractController{
     @GetMapping("/media/{fileName}")
     public void download(@PathVariable("fileName") String fileName, HttpServletResponse resp){
         File f = mediaService.download(fileName);
-        //todo incorrect image visualization. I've tried with /*, /jpg
+
         resp.setContentType("image/avif");
         Files.copy(f.toPath(), resp.getOutputStream());
     }
