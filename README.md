@@ -13,34 +13,29 @@ Welcome to **SoundCloud Spring**! A RESTful MVC web application built with ❤�
 - 💖 Like a track: Show your love for your favorite tracks with a simple click 💓
 - 💬 Comment on songs: Share your thoughts and interact with other users 🗣️
 
-⚙️ **Technologies & Tools** ⚙️
+🛠️ **Technologies & Tools** 🛠️
 
+💻 **Backend**
 🌱 **Spring Boot** - Lightning fast development with a modern, scalable backend framework
-
-📬 **JavaMail API** - Reliable and efficient email integration
-
 🌿 **Spring JPA** - Effortless object-relational mapping and persistence
-
-🌐 **Model Mapper** - Seamless object mapping for clean and readable code
-
 🦔 **Hibernate** - Robust and high-performance ORM framework
+🔧 **Maven** - Reliable project build and dependency management tool
+🐈 **Lombok** - Simplified boilerplate code with clean and elegant annotations
+🧪 **Unit tests with Mockito** - Thorough and maintainable testing for robust software
 
+💽 **Database**
+💾 **MySQL** - Powerful and flexible relational database management system
+🛠️ **Workbench** - Efficient and user-friendly MySQL management tool
+
+📬 **API & Integration**
+🌐 **JavaMail API** - Reliable and efficient email integration
+🗺️ **Model Mapper** - Seamless object mapping for clean and readable code
 📮 **Postman** - Streamlined API testing and development
 
-💾 **MySQL** - Powerful and flexible relational database management system
+☁️ **Cloud & Deployment**
+🌩️ **AWS** - Scalable and secure cloud infrastructure services
+🐈 **Tomcat** - Lightweight and flexible web application server
 
-🔧 **Workbench** - Efficient and user-friendly MySQL management tool
-
-☁️ **AWS** - Scalable and secure cloud infrastructure services
-
+🔧 **Development Environment**
 🧠 **IntelliJ** - Advanced and versatile Java IDE
-
 🌲 **Git** - Robust version control system for effective collaboration
-
-🏗️ **Maven** - Reliable project build and dependency management tool
-
-🐱 **Tomcat** - Lightweight and flexible web application server
-
-🪶 **Lombok** - Simplified boilerplate code with clean and elegant annotations
-
-🧪 **Unit tests with Mockito** - Thorough and maintainable testing for robust software
