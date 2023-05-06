@@ -31,9 +31,7 @@ public class CommentController extends AbstractController{
 
     @GetMapping("/users/{userId}/comments")
     public List<CommentInfoDTO> getAllCommentsByUser(@PathVariable int userId, HttpSession s) {
-        if (s.getAttribute("LOGGED") == null && !(boolean) s.getAttribute("LOGGED")) {
-            throw new BadRequestException("User is not logged in.");
-        }
+        getLoggedId(s);
         return commentService.getAllByUser(userId);
     }
 

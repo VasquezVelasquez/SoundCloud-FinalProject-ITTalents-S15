@@ -47,7 +47,7 @@ public class PlaylistController extends AbstractController{
 
     @GetMapping("/users/{id}/playlists")
     public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable int id, HttpSession s) {
-        checkLogged(s);
+        getLoggedId(s);
         return playlistService.getPlaylistsByUserId(id);
     }
 
@@ -59,7 +59,7 @@ public class PlaylistController extends AbstractController{
 
     @GetMapping("/playlists/search")
     public List<PlaylistDTO> getPlaylistsByTitle(@RequestParam(required = false) String title, HttpSession s) {
-        checkLogged(s);
+        getLoggedId(s);
         if (title != null) {
             return playlistService.getPlaylistsByTitle(title);
         }

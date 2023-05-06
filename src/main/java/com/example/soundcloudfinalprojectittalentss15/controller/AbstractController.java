@@ -67,7 +67,7 @@ public abstract class AbstractController {
                 .build();
     }
 
-    protected int getLoggedId(HttpSession s){
+    protected static int getLoggedId(HttpSession s){
         if(s.getAttribute(LOGGED_ID) == null){
             throw new UnauthorizedException("You have to login first");
         }
@@ -78,19 +78,6 @@ public abstract class AbstractController {
         return s.getAttribute(LOGGED_ID) != null;
     }
 
-    protected void checkLogged(HttpSession s) {
-        if (!isLogged(s)) {
-            throw new BadRequestException("User is not logged in.");
-        }
-    }
-
-    //TODO use it
-    public boolean isValidPictureFile(MultipartFile file) {
-        String contentType = file.getContentType();
-        boolean isValidImage = contentType != null &&
-                (contentType.equalsIgnoreCase("image/jpeg") || contentType.equalsIgnoreCase("image/png"));
-        return isValidImage;
-    }
 
     protected String getRequestSiteURL(HttpServletRequest request) {
         String siteURL = request.getRequestURL().toString();
