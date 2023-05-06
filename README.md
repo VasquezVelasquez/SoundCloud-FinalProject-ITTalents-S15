@@ -13,7 +13,7 @@ Welcome to **SoundCloud Spring**! A RESTful MVC web application built with ❤�
 - 💖 Like a track: Show your love for your favorite tracks with a simple click 💓
 - 💬 Comment on songs: Share your thoughts and interact with other users 🗣️
 
-🛠️ **Technologies & Tools** 🛠️
+## 🛠️ **Technologies & Tools** 🛠️
 
 💻 **Backend**
 - 🌱 **Spring Boot** - Lightning fast development with a modern, scalable backend framework
