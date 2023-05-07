@@ -4,81 +4,78 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.Com
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.CreationCommentDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.CommentService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 
-@WebMvcTest(CommentController.class)
-public class CommentControllerTest {
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-    @Autowired
-    MockMvc mockMvc;
-    @MockBean
-    CommentService commentService;
-    @MockBean
-    CommentController commentController;
-    @Autowired
-    ObjectMapper objectMapper;
+
+
+
+@ExtendWith(MockitoExtension.class)
+public class CommentControllerTest extends AbstractTest {
+
+    @Mock
+    private CommentService commentService;
+    @InjectMocks
+    private CommentController commentController;
 
 
     @Test
-    void getSongComments() {
-        int trackId = 1;
-        int pageNumber = 0;
+    public void getSongComments() {
 
-        // Creating a read-only list with just one object for testing purposes
-        List<CommentInfoDTO> commentList = Collections.singletonList(new CommentInfoDTO());
+        CommentInfoDTO commentInfoDTO = createCommentInfoDTO();
+        List<CommentInfoDTO> commentList = List.of(commentInfoDTO);
+        Page<CommentInfoDTO> comments = new PageImpl<>(commentList, PageRequest.of(PAGE_NUMBER, 10), 1);
 
-        // Creating a Page object for CommentInfoDTO with the specified list of comments and page number
-        Page<CommentInfoDTO> comments = new PageImpl<>(commentList, PageRequest.of(pageNumber, 10), 1);
 
-        // Mocking the getAllByTrack method of the commentService
-        when(commentService.getAllByTrack(trackId, pageNumber)).thenReturn(comments);
+        when(commentService.getAllByTrack(TRACK_ID, PAGE_NUMBER)).thenReturn(comments);
 
-        // Calling the getSongComments method of the commentController and passing in the required arguments
-        Page<CommentInfoDTO> result = commentController.getSongComments(trackId, pageNumber);
+        Page<CommentInfoDTO> result = commentController.getSongComments(TRACK_ID, PAGE_NUMBER);
 
-        // Asserting that the size of the returned list matches the expected size
         assertEquals(commentList.size(), result.getContent().size());
 
-        // Asserting that the values of the properties of the returned CommentInfoDTO match the expected values
+
         assertEquals(commentList.get(0).getId(), result.getContent().get(0).getId());
         assertEquals(commentList.get(0).getContent(), result.getContent().get(0).getContent());
         assertEquals(commentList.get(0).getUserId(), result.getContent().get(0).getUserId());
 
-        // Verifying that the getAllByTrack method of the commentService was called once with the expected arguments
-        verify(commentService, times(1)).getAllByTrack(trackId, pageNumber);
+
+        verify(commentService, times(1)).getAllByTrack(TRACK_ID, PAGE_NUMBER);
     }
 
 
 
+
+
     @Test
-    void getAllCommentsByUser() {
-        int userId = 1;
-        CommentInfoDTO comment = new CommentInfoDTO();
-        comment.setId(1);
-        comment.setContent("Best track!");
-        comment.setUserId(userId);
-        List<CommentInfoDTO> commentList = List.of(comment);
+    public void getAllCommentsByUser() {
+        CommentInfoDTO commentInfoDTO = createCommentInfoDTO();
+        List<CommentInfoDTO> commentList = List.of(commentInfoDTO);
 
-        when(commentService.getAllByUser(userId)).thenReturn(commentList);
+        when(commentService.getAllByUser(USER_ID)).thenReturn(commentList);
 
-        List<CommentInfoDTO> result = commentController.getAllCommentsByUser(userId, mock(HttpSession.class));
+
+        HttpSession mockedSession = mock(HttpSession.class);
+        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
+        List<CommentInfoDTO> result = commentController.getAllCommentsByUser(USER_ID, mockedSession);
 
         assertEquals(commentList.size(), result.size());
 
@@ -86,81 +83,76 @@ public class CommentControllerTest {
         assertEquals(commentList.get(0).getContent(), result.get(0).getContent());
         assertEquals(commentList.get(0).getUserId(), result.get(0).getUserId());
 
-        verify(commentService, times(1)).getAllByUser(userId);
+        verify(commentService, times(1)).getAllByUser(USER_ID);
     }
 
 
     @Test
-    void deleteCommentTest() {
-        int trackId = 1;
-        int commentId = 1;
-        int userId = 1;
+    public void deleteCommentTest() {
+        CommentInfoDTO comment = createCommentInfoDTO();
 
-        CommentInfoDTO comment = new CommentInfoDTO();
-        comment.setId(commentId);
-        comment.setContent("Best track!");
-        comment.setUserId(userId);
+        when(commentService.deleteComment(TRACK_ID, COMMENT_ID, USER_ID)).thenReturn(comment);
 
-        when(commentService.deleteComment(trackId, commentId, userId)).thenReturn(comment);
+        HttpSession mockedSession = mock(HttpSession.class);
+        when(mockedSession.getAttribute("LOGGED_ID")).thenReturn(USER_ID);
+        CommentInfoDTO result = commentController.deleteComment(TRACK_ID, COMMENT_ID, mockedSession);
 
-        CommentInfoDTO result = commentController.deleteComment(trackId, commentId, mock(HttpSession.class));
+        assertEquals(COMMENT_ID, result.getId());
+        assertEquals(COMMENT_CONTENT, result.getContent());
+        assertEquals(USER_ID, result.getUserId());
 
-        assertEquals(commentId, result.getId());
-        assertEquals("Best track!", result.getContent());
-        assertEquals(userId, result.getUserId());
-
-        verify(commentService, times(1)).deleteComment(trackId, commentId, userId);
+        verify(commentService, times(1)).deleteComment(TRACK_ID, COMMENT_ID, USER_ID);
     }
 
     @Test
-    void createComment() {
-        int trackId = 1;
-        int userId = 1;
-        String content = "Great track!";
+    public void createComment() {
 
         CreationCommentDTO creationCommentDTO = new CreationCommentDTO();
-        creationCommentDTO.setContent(content);
+        creationCommentDTO.setContent(COMMENT_CONTENT);
 
-        CommentInfoDTO comment = new CommentInfoDTO();
-        comment.setId(1);
-        comment.setContent(content);
-        comment.setUserId(userId);
+        CommentInfoDTO comment = createCommentInfoDTO();
 
-        when(commentService.createComment(trackId, content, userId)).thenReturn(comment);
+        when(commentService.createComment(TRACK_ID, COMMENT_CONTENT, USER_ID)).thenReturn(comment);
 
-        CommentInfoDTO result = commentController.createComment(trackId, creationCommentDTO, mock(HttpSession.class));
+        HttpSession mockedSession = mock(HttpSession.class);
+        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
+        CommentInfoDTO result = commentController.createComment(TRACK_ID, creationCommentDTO, mockedSession);
 
         assertEquals(comment.getId(), result.getId());
         assertEquals(comment.getContent(), result.getContent());
         assertEquals(comment.getUserId(), result.getUserId());
 
-        verify(commentService, times(1)).createComment(trackId, content, userId);
+        verify(commentService, times(1)).createComment(TRACK_ID, COMMENT_CONTENT, USER_ID);
     }
 
     @Test
-    void replyToComment() {
-        int trackId = 1;
-        int commentId = 1;
-        int userId = 1;
-        String content = "Thanks for the feedback!";
+    public void replyToComment() {
 
         CreationCommentDTO creationCommentDTO = new CreationCommentDTO();
-        creationCommentDTO.setContent(content);
+        creationCommentDTO.setContent(COMMENT_CONTENT);
 
-        CommentInfoDTO comment = new CommentInfoDTO();
-        comment.setId(2);
-        comment.setContent(content);
-        comment.setUserId(userId);
+        CommentInfoDTO comment = createCommentInfoDTO();
 
-        when(commentService.createReply(trackId, commentId, content, userId)).thenReturn(comment);
+        when(commentService.createReply(TRACK_ID, COMMENT_ID, COMMENT_CONTENT, USER_ID)).thenReturn(comment);
 
-        CommentInfoDTO result = commentController.replyToComment(trackId, commentId, creationCommentDTO, mock(HttpSession.class));
+        HttpSession mockedSession = mock(HttpSession.class);
+        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
+        CommentInfoDTO result = commentController.replyToComment(TRACK_ID, COMMENT_ID, creationCommentDTO, mockedSession);
 
         assertEquals(comment.getId(), result.getId());
         assertEquals(comment.getContent(), result.getContent());
         assertEquals(comment.getUserId(), result.getUserId());
 
-        verify(commentService, times(1)).createReply(trackId, commentId, content, userId);
+        verify(commentService, times(1)).createReply(TRACK_ID, COMMENT_ID, COMMENT_CONTENT, USER_ID);
+    }
+
+    private CommentInfoDTO createCommentInfoDTO() {
+        CommentInfoDTO commentInfoDTO = new CommentInfoDTO();
+        commentInfoDTO.setId(COMMENT_ID);
+        commentInfoDTO.setContent(COMMENT_CONTENT);
+        commentInfoDTO.setUserId(USER_ID);
+        return commentInfoDTO;
+
     }
 
 

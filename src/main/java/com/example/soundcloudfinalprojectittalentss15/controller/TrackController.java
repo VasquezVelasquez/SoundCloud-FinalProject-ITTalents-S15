@@ -22,14 +22,12 @@ public class TrackController extends AbstractController {
 
     @PutMapping("/tracks/{trackId}")
     public TrackInfoDTO editTrack(@PathVariable int trackId, @Valid @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
-        int userId = getLoggedId(s);
-        return trackService.editTrack(trackId, trackEditDTO, userId);
+        return trackService.editTrack(trackId, trackEditDTO, getLoggedId(s));
     }
 
     @PostMapping("tracks/{id}/like")
     public TrackLikeDTO likeTrack(@PathVariable int id, HttpSession s) {
-        int userId = getLoggedId(s);
-        return trackService.likeTrack(id, userId);
+        return trackService.likeTrack(id, getLoggedId(s));
 
     }
 
