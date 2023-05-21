@@ -22,7 +22,6 @@ import java.util.UUID;
 public abstract class AbstractService {
 
     public static final String PICTURES_DIRECTORY = "pictures";
-    public static final String TRACKS_DIRECTORY = "tracks";
 
     @Autowired
     protected UserRepository userRepository;
