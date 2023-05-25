@@ -5,7 +5,7 @@ Welcome to **SoundCloud Spring**! A RESTful MVC web application built with ❤�
 
 ## 🌟 Features
 
-- 🔒 User authentication: Secure login and registration with email verification 📧
+- 🔒 User authentication: Secure login and registration with JWT (JSON Web Token) and email verification 📧. 
 - 🎵 Upload a track: Seamlessly upload your tracks to Amazon S3 🌐
 - 🎼 Create a playlist: Curate and manage your favorite tracks in one place 🎉
 - 🔍 Search: Find tracks and playlists by name to discover new music 🕵️‍♂️
@@ -19,6 +19,7 @@ Welcome to **SoundCloud Spring**! A RESTful MVC web application built with ❤�
 - 🌱 **Spring Boot** - Lightning fast development with a modern, scalable backend framework
 - 🌿 **Spring JPA** - Effortless object-relational mapping and persistence
 - 🦔 **Hibernate** - Robust and high-performance ORM framework
+- 🛡️ Spring Security & JWT - Using JSON Web Tokens for user authentication.
 - 🔧 **Maven** - Reliable project build and dependency management tool
 - 🐈 **Lombok** - Simplified boilerplate code with clean and elegant annotations
 - 🧪 **Unit tests with Mockito** - Thorough and maintainable testing for robust software
