@@ -1,11 +1,18 @@
 package com.example.soundcloudfinalprojectittalentss15.services;
 
+import com.example.soundcloudfinalprojectittalentss15.model.DTOs.AuthenticationResponse;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.*;
 import com.example.soundcloudfinalprojectittalentss15.model.entities.User;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +25,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService extends AbstractService {
 
-    @Autowired
-    private BCryptPasswordEncoder encoder;
 
-    @Autowired
-    private EmailSenderService emailService;
+    private final BCryptPasswordEncoder encoder;
+
+    private final EmailSenderService emailService;
+
+    private final JwtService jwtService;
+
+    private final AuthenticationManager authenticationManager;
+
+
 
     @Transactional
     public UserWithoutPasswordDTO register(RegisterDTO dto, String siteURL) {
@@ -53,7 +66,8 @@ public class UserService extends AbstractService {
         return mapper.map(user, UserWithoutPasswordDTO.class);
     }
 
-    public UserWithoutPasswordDTO login(LoginDTO dto, String siteURL) {
+
+    public AuthenticationResponse login(LoginDTO dto, String siteURL) {
         User user = getUserByEmail(dto.getEmail());
         if (!encoder.matches(dto.getPassword(), user.getPassword())) {
             handleFailedLogin(user, siteURL);
@@ -64,7 +78,11 @@ public class UserService extends AbstractService {
             throw new UnauthorizedException("User account is blocked. Please reset your password.");
         }
 
-        return successfulLogin(user);
+        successfulLogin(user);
+        String token = jwtService.generateToken(user, user.getId());
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        authenticationResponse.setToken(token);
+        return authenticationResponse;
     }
 
     void handleFailedLogin(User user, String siteURL) {
@@ -225,6 +243,7 @@ public class UserService extends AbstractService {
 
         return followedUsersPage.map(followed -> mapper.map(followed, UserBasicInfoDTO.class));
     }
+
 
 
 }

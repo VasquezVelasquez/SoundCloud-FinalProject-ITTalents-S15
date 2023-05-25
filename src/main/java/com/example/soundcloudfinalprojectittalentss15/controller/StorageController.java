@@ -5,6 +5,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUploadInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.StorageService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -15,15 +16,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
+@RequiredArgsConstructor
 public class StorageController extends AbstractController{
 
-    @Autowired
-    private StorageService storageService;
+
+    private final StorageService storageService;
 
     @PostMapping("/tracks")
     public TrackUploadInfoDTO upload(@RequestParam("track") MultipartFile trackFile, @RequestParam String title,
-                                     @RequestParam String description, HttpSession s) {
-        return storageService.uploadTrack(trackFile, title, description,  getLoggedId(s));
+                                     @RequestParam String description, @RequestHeader ("Authorization") String authHeader) {
+        return storageService.uploadTrack(trackFile, title, description, getUserIdFromHeader(authHeader));
     }
 
     @SneakyThrows
@@ -40,8 +42,8 @@ public class StorageController extends AbstractController{
     }
 
     @DeleteMapping("tracks/{id}")
-    public TrackInfoDTO deleteTrack(@PathVariable int id, HttpSession s) {
-        return storageService.deleteTrack(id, getLoggedId(s));
+    public TrackInfoDTO deleteTrack(@PathVariable int id, @RequestHeader ("Authorization") String authHeader) {
+        return storageService.deleteTrack(id, getUserIdFromHeader(authHeader));
 
     }
 }

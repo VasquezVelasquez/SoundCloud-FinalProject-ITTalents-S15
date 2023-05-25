@@ -6,6 +6,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.services.MediaService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +16,20 @@ import java.io.File;
 import java.nio.file.Files;
 
 @RestController
+@RequiredArgsConstructor
 public class MediaController extends AbstractController{
 
-    @Autowired
-    private MediaService mediaService;
+
+    private final MediaService mediaService;
 
     @PostMapping("/users/upload/profile-pic")
-    public UserWithoutPasswordDTO uploadProfilePicture(@RequestParam("file") MultipartFile file, HttpSession s) {
-        return mediaService.uploadProfilePicture(file, getLoggedId(s));
+    public UserWithoutPasswordDTO uploadProfilePicture(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String authHeader) {
+        return mediaService.uploadProfilePicture(file, getUserIdFromHeader(authHeader));
     }
 
     @PostMapping("/users/upload/background-pic")
-    public UserWithoutPasswordDTO uploadBackgroundPicture(@RequestParam("file") MultipartFile file, HttpSession s) {
-        return mediaService.uploadBackgroundPicture(file, getLoggedId(s));
+    public UserWithoutPasswordDTO uploadBackgroundPicture(@RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String authHeader) {
+        return mediaService.uploadBackgroundPicture(file, getUserIdFromHeader(authHeader));
     }
 
     @SneakyThrows
@@ -41,16 +43,16 @@ public class MediaController extends AbstractController{
 
 
     @PostMapping("/tracks/{trackId}")
-    public TrackInfoDTO uploadTrackCoverPicture(@RequestParam("file") MultipartFile file, @PathVariable int trackId, HttpSession s) {
+    public TrackInfoDTO uploadTrackCoverPicture(@RequestParam("file") MultipartFile file, @PathVariable int trackId, @RequestHeader("Authorization") String authHeader) {
 
-        return mediaService.uploadTrackCoverPicture(file, trackId, getLoggedId(s));
+        return mediaService.uploadTrackCoverPicture(file, trackId, getUserIdFromHeader(authHeader));
     }
 
 
     @PostMapping("/playlists/{playlistId}/cover-pic")
     public PlaylistDTO uploadPlaylistCoverPicture(@RequestParam("file") MultipartFile file,
-                                                  @PathVariable int playlistId, HttpSession s) {
-        return mediaService.uploadPlaylistCoverPicture(file, playlistId, getLoggedId(s));
+                                                  @PathVariable int playlistId, @RequestHeader("Authorization") String authHeader) {
+        return mediaService.uploadPlaylistCoverPicture(file, playlistId, getUserIdFromHeader(authHeader));
     }
 
 

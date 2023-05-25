@@ -7,6 +7,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +15,22 @@ import java.util.List;
 
 
 @RestController
+@RequiredArgsConstructor
 public class TrackController extends AbstractController {
 
-    @Autowired
-    private TrackService trackService;
+
+    private final TrackService trackService;
 
 
     @PutMapping("/tracks/{trackId}")
-    public TrackInfoDTO editTrack(@PathVariable int trackId, @Valid @RequestBody TrackEditInfoDTO trackEditDTO, HttpSession s) {
-        return trackService.editTrack(trackId, trackEditDTO, getLoggedId(s));
+    public TrackInfoDTO editTrack(@PathVariable int trackId, @Valid @RequestBody TrackEditInfoDTO trackEditDTO,
+                                  @RequestHeader ("Authorization") String authHeader) {
+        return trackService.editTrack(trackId, trackEditDTO, getUserIdFromHeader(authHeader));
     }
 
     @PostMapping("tracks/{id}/like")
-    public TrackLikeDTO likeTrack(@PathVariable int id, HttpSession s) {
-        return trackService.likeTrack(id, getLoggedId(s));
+    public TrackLikeDTO likeTrack(@PathVariable int id, @RequestHeader ("Authorization") String authHeader) {
+        return trackService.likeTrack(id, getUserIdFromHeader(authHeader));
 
     }
 
@@ -60,15 +63,4 @@ public class TrackController extends AbstractController {
         return trackService.searchTracksByTags(request);
 
     }
-
-
-
-
-
-
-
-
-
-
-
 }

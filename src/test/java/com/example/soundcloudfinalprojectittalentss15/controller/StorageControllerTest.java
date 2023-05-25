@@ -3,8 +3,8 @@ package com.example.soundcloudfinalprojectittalentss15.controller;
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackUploadInfoDTO;
+import com.example.soundcloudfinalprojectittalentss15.services.JwtService;
 import com.example.soundcloudfinalprojectittalentss15.services.StorageService;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,11 +26,14 @@ public class StorageControllerTest extends AbstractTest{
     @Mock
     private StorageService storageService;
 
+    @Mock
+    private JwtService jwtService;
+
     @InjectMocks
     private StorageController storageController;
 
     @Test
-    public void uploadTest() {
+    public void uploadTest() throws Exception {
         MultipartFile trackFile = new MockMultipartFile(TRACK_TITLE, "test.mp3", "audio/mpeg", "test".getBytes());
 
         TrackUploadInfoDTO expectedResponse = new TrackUploadInfoDTO();
@@ -38,18 +41,19 @@ public class StorageControllerTest extends AbstractTest{
         expectedResponse.setDescription(TRACK_DESCRIPTION);
         expectedResponse.setId(USER_ID);
 
+        String authHeader = "Bearer testToken";
+
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
         when(storageService.uploadTrack(trackFile, TRACK_TITLE, TRACK_DESCRIPTION, USER_ID)).thenReturn(expectedResponse);
 
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-
-        TrackUploadInfoDTO result = storageController.upload(trackFile, TRACK_TITLE, TRACK_DESCRIPTION, mockedSession);
+        TrackUploadInfoDTO result = storageController.upload(trackFile, TRACK_TITLE, TRACK_DESCRIPTION, authHeader);
 
         assertEquals(expectedResponse.getTitle(), result.getTitle());
         assertEquals(expectedResponse.getDescription(), result.getDescription());
         assertEquals(expectedResponse.getId(), result.getId());
 
         verify(storageService, times(1)).uploadTrack(trackFile, TRACK_TITLE, TRACK_DESCRIPTION, USER_ID);
+        verify(jwtService, times(1)).getUserIdFromToken(anyString());
     }
 
     @Test
@@ -74,15 +78,17 @@ public class StorageControllerTest extends AbstractTest{
         TrackInfoDTO expectedResponse = new TrackInfoDTO();
         expectedResponse.setId(TRACK_ID);
 
+        String authHeader = "Bearer testToken";
+
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
         when(storageService.deleteTrack(TRACK_ID, USER_ID)).thenReturn(expectedResponse);
 
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-
-        TrackInfoDTO result = storageController.deleteTrack(TRACK_ID, mockedSession);
+        TrackInfoDTO result = storageController.deleteTrack(TRACK_ID, authHeader);
 
         assertEquals(expectedResponse.getId(), result.getId());
 
         verify(storageService, times(1)).deleteTrack(TRACK_ID, USER_ID);
+        verify(jwtService, times(1)).getUserIdFromToken(anyString());
     }
+
 }

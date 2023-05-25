@@ -5,8 +5,8 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.Track
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackInfoDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.trackDTOs.TrackLikeDTO;
 
+import com.example.soundcloudfinalprojectittalentss15.services.JwtService;
 import com.example.soundcloudfinalprojectittalentss15.services.TrackService;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +28,9 @@ public class TrackControllerTest extends AbstractTest {
 
     @Mock
     private TrackService trackService;
+
+    @Mock
+    JwtService jwtService;
     @InjectMocks
     private TrackController trackController;
 
@@ -43,19 +46,19 @@ public class TrackControllerTest extends AbstractTest {
         trackInfoDTO.setTitle(trackEditInfoDTO.getTitle());
         trackInfoDTO.setDescription(trackEditInfoDTO.getDescription());
 
+        String authHeader = "Bearer testToken";
 
-        when(trackService.editTrack(TRACK_ID, trackEditInfoDTO, 1)).thenReturn(trackInfoDTO);
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
+        when(trackService.editTrack(TRACK_ID, trackEditInfoDTO, USER_ID)).thenReturn(trackInfoDTO);
 
-
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-        TrackInfoDTO result = trackController.editTrack(TRACK_ID, trackEditInfoDTO, mockedSession);
+        TrackInfoDTO result = trackController.editTrack(TRACK_ID, trackEditInfoDTO, authHeader);
 
         assertEquals(trackInfoDTO.getId(), result.getId());
         assertEquals(trackInfoDTO.getTitle(), result.getTitle());
         assertEquals(trackInfoDTO.getDescription(), result.getDescription());
 
-        verify(trackService, times(1)).editTrack(TRACK_ID, trackEditInfoDTO, 1);
+        verify(trackService, times(1)).editTrack(TRACK_ID, trackEditInfoDTO, USER_ID);
+        verify(jwtService, times(1)).getUserIdFromToken(anyString());
     }
 
     @Test
@@ -63,15 +66,17 @@ public class TrackControllerTest extends AbstractTest {
         TrackLikeDTO trackLikeDTO = new TrackLikeDTO();
         trackLikeDTO.setLiked(true);
 
+        String authHeader = "Bearer testToken";
+
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
         when(trackService.likeTrack(TRACK_ID, USER_ID)).thenReturn(trackLikeDTO);
 
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-        TrackLikeDTO result = trackController.likeTrack(TRACK_ID, mockedSession);
-
+        TrackLikeDTO result = trackController.likeTrack(TRACK_ID, authHeader);
 
         assertEquals(trackLikeDTO.isLiked(), result.isLiked());
+
         verify(trackService, times(1)).likeTrack(TRACK_ID, USER_ID);
+        verify(jwtService, times(1)).getUserIdFromToken(anyString());
     }
 
     @Test

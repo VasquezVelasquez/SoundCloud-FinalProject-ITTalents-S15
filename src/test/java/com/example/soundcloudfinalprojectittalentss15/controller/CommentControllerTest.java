@@ -4,7 +4,7 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.Com
 
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.commentDTOs.CreationCommentDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.CommentService;
-import jakarta.servlet.http.HttpSession;
+import com.example.soundcloudfinalprojectittalentss15.services.JwtService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +34,9 @@ public class CommentControllerTest extends AbstractTest {
 
     @Mock
     private CommentService commentService;
+
+    @Mock
+    JwtService jwtService;
     @InjectMocks
     private CommentController commentController;
 
@@ -65,6 +68,8 @@ public class CommentControllerTest extends AbstractTest {
 
 
 
+
+
     @Test
     public void getAllCommentsByUser() {
         CommentInfoDTO commentInfoDTO = createCommentInfoDTO();
@@ -72,13 +77,9 @@ public class CommentControllerTest extends AbstractTest {
 
         when(commentService.getAllByUser(USER_ID)).thenReturn(commentList);
 
-
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-        List<CommentInfoDTO> result = commentController.getAllCommentsByUser(USER_ID, mockedSession);
+        List<CommentInfoDTO> result = commentController.getAllCommentsByUser(USER_ID);
 
         assertEquals(commentList.size(), result.size());
-
         assertEquals(commentList.get(0).getId(), result.get(0).getId());
         assertEquals(commentList.get(0).getContent(), result.get(0).getContent());
         assertEquals(commentList.get(0).getUserId(), result.get(0).getUserId());
@@ -91,18 +92,22 @@ public class CommentControllerTest extends AbstractTest {
     public void deleteCommentTest() {
         CommentInfoDTO comment = createCommentInfoDTO();
 
+        String authHeader = "Bearer testToken";
+
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
         when(commentService.deleteComment(TRACK_ID, COMMENT_ID, USER_ID)).thenReturn(comment);
 
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute("LOGGED_ID")).thenReturn(USER_ID);
-        CommentInfoDTO result = commentController.deleteComment(TRACK_ID, COMMENT_ID, mockedSession);
+
+        CommentInfoDTO result = commentController.deleteComment(TRACK_ID, COMMENT_ID, authHeader);
 
         assertEquals(COMMENT_ID, result.getId());
         assertEquals(COMMENT_CONTENT, result.getContent());
         assertEquals(USER_ID, result.getUserId());
 
         verify(commentService, times(1)).deleteComment(TRACK_ID, COMMENT_ID, USER_ID);
+        verify(jwtService, times(1)).getUserIdFromToken(anyString());
     }
+
 
     @Test
     public void createComment() {
@@ -112,18 +117,22 @@ public class CommentControllerTest extends AbstractTest {
 
         CommentInfoDTO comment = createCommentInfoDTO();
 
+        String authHeader = "Bearer testToken";
+
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
         when(commentService.createComment(TRACK_ID, COMMENT_CONTENT, USER_ID)).thenReturn(comment);
 
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-        CommentInfoDTO result = commentController.createComment(TRACK_ID, creationCommentDTO, mockedSession);
+        CommentInfoDTO result = commentController.createComment(TRACK_ID, creationCommentDTO, authHeader);
 
         assertEquals(comment.getId(), result.getId());
         assertEquals(comment.getContent(), result.getContent());
         assertEquals(comment.getUserId(), result.getUserId());
 
         verify(commentService, times(1)).createComment(TRACK_ID, COMMENT_CONTENT, USER_ID);
+        verify(jwtService, times(1)).getUserIdFromToken(anyString());
     }
+
+
 
     @Test
     public void replyToComment() {
@@ -133,11 +142,11 @@ public class CommentControllerTest extends AbstractTest {
 
         CommentInfoDTO comment = createCommentInfoDTO();
 
+        String authHeader = "Bearer testToken";
+        when(jwtService.getUserIdFromToken(anyString())).thenReturn(USER_ID);
         when(commentService.createReply(TRACK_ID, COMMENT_ID, COMMENT_CONTENT, USER_ID)).thenReturn(comment);
 
-        HttpSession mockedSession = mock(HttpSession.class);
-        when(mockedSession.getAttribute(LOGGED_ID)).thenReturn(USER_ID);
-        CommentInfoDTO result = commentController.replyToComment(TRACK_ID, COMMENT_ID, creationCommentDTO, mockedSession);
+        CommentInfoDTO result = commentController.replyToComment(TRACK_ID, COMMENT_ID, creationCommentDTO, authHeader);
 
         assertEquals(comment.getId(), result.getId());
         assertEquals(comment.getContent(), result.getContent());

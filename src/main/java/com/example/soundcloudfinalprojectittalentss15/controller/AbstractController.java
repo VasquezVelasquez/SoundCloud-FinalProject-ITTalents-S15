@@ -4,20 +4,28 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.userDTOs.ErrorD
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.BadRequestException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.NotFoundException;
 import com.example.soundcloudfinalprojectittalentss15.model.exceptions.UnauthorizedException;
+import com.example.soundcloudfinalprojectittalentss15.services.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public abstract class AbstractController {
+
+    @Autowired
+    protected JwtService jwtService;
+
+
 
     public static final String LOGGED_ID = "LOGGED_ID";
 
@@ -74,8 +82,12 @@ public abstract class AbstractController {
         return (int) s.getAttribute(LOGGED_ID);
     }
 
-    protected boolean isLogged(HttpSession s) {
-        return s.getAttribute(LOGGED_ID) != null;
+    protected String getTokenFromHeader(String authHeader) {
+        return authHeader.substring(7);
+    }
+
+    protected int getUserIdFromHeader(String header) {
+        return jwtService.getUserIdFromToken(getTokenFromHeader(header));
     }
 
 
@@ -83,6 +95,7 @@ public abstract class AbstractController {
         String siteURL = request.getRequestURL().toString();
         return siteURL.replace(request.getServletPath(), "");
     }
+
 
 
 }

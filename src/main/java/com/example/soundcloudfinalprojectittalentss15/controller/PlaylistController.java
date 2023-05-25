@@ -6,10 +6,11 @@ import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.Pla
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.playlistDTO.TrackIdDTO;
 import com.example.soundcloudfinalprojectittalentss15.model.DTOs.tagDTO.TagSearchDTO;
 import com.example.soundcloudfinalprojectittalentss15.services.PlaylistService;
-import com.example.soundcloudfinalprojectittalentss15.services.TagService;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,49 +18,45 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class PlaylistController extends AbstractController{
 
-    @Autowired
-    private PlaylistService playlistService;
 
-    @Autowired
-    private TagService tagService;
+    private final PlaylistService playlistService;
 
     @PostMapping("/playlists")
-    public PlaylistDTO create(@Valid @RequestBody CreatePlaylistDTO dto, HttpSession s) {
-        return playlistService.create(dto, getLoggedId(s));
+    public PlaylistDTO create(@Valid @RequestBody CreatePlaylistDTO dto, @RequestHeader ("Authorization") String authHeader) {
+        return playlistService.create(dto, getUserIdFromHeader(authHeader));
     }
 
     @PostMapping("/playlists/{playlistId}/tracks")
-    public PlaylistDTO addTrack(@PathVariable int playlistId, @RequestBody TrackIdDTO dto, HttpSession s) {
-        return playlistService.addTrack(playlistId, dto.getTrackId(), getLoggedId(s));
+    public PlaylistDTO addTrack(@PathVariable int playlistId, @RequestBody TrackIdDTO dto, @RequestHeader ("Authorization") String authHeader) {
+        return playlistService.addTrack(playlistId, dto.getTrackId(), getUserIdFromHeader(authHeader));
     }
 
     @DeleteMapping("/playlists/{playlistId})")
-    public ResponseEntity<String> deletePlaylist(@PathVariable int playlistId, HttpSession s) {
-        return playlistService.deletePlaylist(playlistId, getLoggedId(s));
+    public ResponseEntity<String> deletePlaylist(@PathVariable int playlistId, @RequestHeader ("Authorization") String authHeader) {
+        return playlistService.deletePlaylist(playlistId, getUserIdFromHeader(authHeader));
     }
 
     @DeleteMapping("/playlists/{playlistId}/tracks/{trackId}")
-    public PlaylistDTO removeTrackById(@PathVariable int playlistId, @PathVariable int trackId, HttpSession s) {
-        return playlistService.removeTrackById(playlistId, trackId, getLoggedId(s));
+    public PlaylistDTO removeTrackById(@PathVariable int playlistId, @PathVariable int trackId, @RequestHeader ("Authorization") String authHeader) {
+        return playlistService.removeTrackById(playlistId, trackId, getUserIdFromHeader(authHeader));
     }
 
     @GetMapping("/users/{id}/playlists")
-    public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable int id, HttpSession s) {
-        getLoggedId(s);
+    public List<PlaylistDTO> getPlaylistsByUserId(@PathVariable int id) {
         return playlistService.getPlaylistsByUserId(id);
     }
 
     @PutMapping("/playlists/{playlistId}")
-    public PlaylistDTO editInfo(@PathVariable int playlistId, @RequestBody EditPlaylistInfoDTO dto, HttpSession s) {
-        return playlistService.editInfo(playlistId, dto, getLoggedId(s));
+    public PlaylistDTO editInfo(@PathVariable int playlistId, @RequestBody EditPlaylistInfoDTO dto, @RequestHeader ("Authorization") String authHeader) {
+        return playlistService.editInfo(playlistId, dto, getUserIdFromHeader(authHeader));
     }
 
 
     @GetMapping("/playlists/search")
-    public List<PlaylistDTO> getPlaylistsByTitle(@RequestParam(required = false) String title, HttpSession s) {
-        getLoggedId(s);
+    public List<PlaylistDTO> getPlaylistsByTitle(@RequestParam(required = false) String title) {
         if (title != null) {
             return playlistService.getPlaylistsByTitle(title);
         }
@@ -67,15 +64,14 @@ public class PlaylistController extends AbstractController{
     }
 
     @PostMapping("playlists/{id}/like")
-    public PlaylistDTO likePlaylist(@PathVariable int id, HttpSession s) {
-        int userId = getLoggedId(s);
+    public PlaylistDTO likePlaylist(@PathVariable int id, @RequestHeader ("Authorization") String authHeader) {
+        int userId = getUserIdFromHeader(authHeader);
         return playlistService.likePlaylist(id, userId);
     }
 
     @GetMapping("/playlists/liked")
-    public List<PlaylistDTO> getLikedPlaylists(HttpSession s) {
-        int id = getLoggedId(s);
-        return playlistService.getLikedPlaylists(id);
+    public List<PlaylistDTO> getLikedPlaylists(@RequestHeader ("Authorization") String authHeader) {
+        return playlistService.getLikedPlaylists(getUserIdFromHeader(authHeader));
     }
     @PostMapping("/playlists/search")
     public Page<PlaylistDTO> searchPlaylistsByTags(@RequestBody TagSearchDTO request) {
